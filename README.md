@@ -53,6 +53,12 @@ Edge-first monorepo boilerplate designed for ultra-fast applications. Built with
 | Docs | Starlight | `/docs/*` | Technical documentation |
 | Gateway | Cloudflare Worker | `/` | Unified routing |
 
+> **Note:** `wrangler.toml` files are not committed (they contain sensitive data). Copy from `.example.wrangler.toml` files after cloning.
+> ```bash
+> cp apps/api/wrangler.toml.example apps/api/wrangler.toml
+> cp apps/gateway/wrangler.toml.example apps/gateway/wrangler.toml
+> ```
+
 ---
 
 ## 📖 Quick Start
@@ -217,16 +223,23 @@ wrangler pages deploy .output
 Our [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki) contains detailed guides for every technology:
 
 - [Variables de Entorno](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) - Complete env setup guide
+- [Variables de Entorno Compartidas](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno-Compartidas) - Centralized env management
 - [Turborepo & pnpm](https://github.com/LionsTheme/the-edge-stack/wiki/Turborepo-y-pnpm) - Understanding the monorepo
+- [Flujo de Desarrollo Local](https://github.com/LionsTheme/the-edge-stack/wiki/Flujo-de-Desarrollo-Local) - Local dev with Wrangler & cloudflared
+- [Service Bindings y Routing](https://github.com/LionsTheme/the-edge-stack/wiki/Service-Bindings-y-Routing) - Gateway pattern & CORS avoidance
 - [Neon PostgreSQL](https://github.com/LionsTheme/the-edge-stack/wiki/Neon-PostgreSQL) - Database setup
 - [Drizzle ORM](https://github.com/LionsTheme/the-edge-stack/wiki/Drizzle-ORM) - Database operations
+- [Migraciones y Entornos](https://github.com/LionsTheme/the-edge-stack/wiki/Migraciones-y-Entornos) - Migration strategy with Neon Branching
 - [Better Auth](https://github.com/LionsTheme/the-edge-stack/wiki/Better-Auth) - Authentication setup
+- [Better Auth y Drizzle](https://github.com/LionsTheme/the-edge-stack/wiki/Better-Auth-y-Drizzle) - Auth + business tables in same DB
 - [Hono API](https://github.com/LionsTheme/the-edge-stack/wiki/Hono-API) - API development
 - [TanStack Start](https://github.com/LionsTheme/the-edge-stack/wiki/TanStack-Start) - Dashboard development
 - [Astro](https://github.com/LionsTheme/the-edge-stack/wiki/Astro) - Landing & blog
 - [Starlight](https://github.com/LionsTheme/the-edge-stack/wiki/Astro-Starlight) - Documentation
 - [Shadcn & Tailwind](https://github.com/LionsTheme/the-edge-stack/wiki/Shadcn-y-Tailwind) - UI components
 - [Cloudflare Workers](https://github.com/LionsTheme/the-edge-stack/wiki/Cloudflare-Workers) - Edge computing
+- [Local Explorer](https://github.com/LionsTheme/the-edge-stack/wiki/Local-Explorer) - Local admin interface for debugging
+- [Consejos y Buenas Prácticas](https://github.com/LionsTheme/the-edge-stack/wiki/Consejos-y-Buenas-Practicas) - Tips for daily development
 - [Deployment](https://github.com/LionsTheme/the-edge-stack/wiki/Despliegue) - Production deployment
 - [FAQ](https://github.com/LionsTheme/the-edge-stack/wiki/FAQ) - Common questions
 
@@ -246,7 +259,8 @@ the-edge-stack/
 │   │   ├── src/
 │   │   │   ├── index.ts      # API routes
 │   │   │   └── index.test.ts # API tests
-│   │   └── wrangler.toml
+│   │   ├── wrangler.toml.example  # Copy to wrangler.toml
+│   │   └── .dev.vars            # Local secrets (gitignored)
 │   ├── dashboard/        # TanStack Start SSR app
 │   │   ├── app/
 │   │   │   ├── routes/       # File-based routes
@@ -257,6 +271,7 @@ the-edge-stack/
 │   ├── blog/             # Astro blog (MDX)
 │   ├── docs/             # Starlight documentation
 │   └── gateway/          # Cloudflare Gateway Worker
+│       └── wrangler.toml.example  # Copy to wrangler.toml
 ├── packages/
 │   ├── database/         # Drizzle schema + Neon client
 │   ├── auth/             # Better Auth configuration
