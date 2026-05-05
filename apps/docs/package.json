@@ -12,14 +12,14 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "astro": "^4.6.0",
-    "@astrojs/cloudflare": "^12.0.0",
-    "@astrojs/starlight": "^0.21.0",
+    "astro": "^5.7.0",
+    "@astrojs/cloudflare": "^12.5.0",
+    "@astrojs/starlight": "^0.34.0",
     "@repo/tailwind-config": "workspace:*"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "typescript": "^5.4.0",
-    "wrangler": "^4.0.0"
+    "typescript": "^5.8.3",
+    "wrangler": "^4.26.0"
   }
 }
