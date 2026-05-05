@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "hono": "^4.2.0",
+    "zod": "^3.22.0",
     "@repo/auth": "workspace:*",
     "@repo/database": "workspace:*"
   },

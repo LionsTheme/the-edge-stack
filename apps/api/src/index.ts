@@ -33,6 +33,12 @@ app.onError((err, c) => {
   return c.json({ error: "Internal Server Error" }, 500);
 });
 
+// Better Auth handler — mounts all auth endpoints under /api/auth/*
+app.on(["POST", "GET"], "/auth/*", async (c) => {
+  const auth = createAuth(c.env);
+  return auth.handler(c.req.raw);
+});
+
 const route = app
   .get("/health", (c) => {
     return c.json({ status: "ok", timestamp: new Date().toISOString() });

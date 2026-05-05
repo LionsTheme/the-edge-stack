@@ -19,7 +19,7 @@ function HomeComponent() {
         <Card>
           <CardHeader>
             <CardTitle>Posts</CardTitle>
-            <CardDescription>Manage content</CardDescription>
+            <CardDescription>Manage content fetched from the API</CardDescription>
           </CardHeader>
         </Card>
         <Card>

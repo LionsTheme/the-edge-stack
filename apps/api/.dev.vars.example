@@ -1,0 +1,22 @@
+# ═══════════════════════════════════════════════════════════
+# THE EDGE STACK - LOCAL DEVELOPMENT SECRETS
+# ═══════════════════════════════════════════════════════════
+# Este archivo se usa en desarrollo local con Wrangler.
+# Copia este archivo como .dev.vars:
+#   cp .dev.vars.example .dev.vars
+# Luego completa los valores.
+# NUNCA commitees .dev.vars (está en .gitignore)
+# ═══════════════════════════════════════════════════════════
+
+# Base de datos (Neon o PostgreSQL local)
+DATABASE_URL=postgresql://user:password@host/database?sslmode=require
+
+# Autenticación
+AUTH_SECRET=tu-auth-secret-de-al-menos-32-caracteres
+
+# URL de la app (para callbacks de OAuth)
+APP_URL=http://localhost:8787
+
+# OAuth Google
+GOOGLE_CLIENT_ID=tu-google-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=tu-google-client-secret
