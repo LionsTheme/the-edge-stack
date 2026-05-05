@@ -34,7 +34,7 @@ jobs:
         run: pnpm --filter './packages/**' build
 
       - name: Deploy API to Cloudflare
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -64,7 +64,7 @@ jobs:
         run: pnpm install
 
       - name: Deploy Gateway to Cloudflare
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -72,7 +72,7 @@ jobs:
           command: deploy
 
   deploy-landing:
-    name: Deploy Landing Page
+    name: Deploy Landing Worker
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -95,16 +95,16 @@ jobs:
       - name: Build Landing
         run: pnpm --filter @repo/landing build
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+      - name: Deploy Landing to Cloudflare
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=the-edge-stack-landing
           workingDirectory: apps/landing
+          command: deploy
 
   deploy-blog:
-    name: Deploy Blog
+    name: Deploy Blog Worker
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -127,16 +127,16 @@ jobs:
       - name: Build Blog
         run: pnpm --filter @repo/blog build
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+      - name: Deploy Blog to Cloudflare
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=the-edge-stack-blog
           workingDirectory: apps/blog
+          command: deploy
 
   deploy-docs:
-    name: Deploy Documentation
+    name: Deploy Docs Worker
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -159,10 +159,10 @@ jobs:
       - name: Build Docs
         run: pnpm --filter @repo/docs build
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+      - name: Deploy Docs to Cloudflare
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=the-edge-stack-docs
           workingDirectory: apps/docs
+          command: deploy

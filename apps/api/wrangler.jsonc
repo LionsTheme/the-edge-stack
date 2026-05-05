@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "the-edge-stack-api",
+  "compatibility_date": "2026-05-05",
+  "main": "src/index.ts",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "APP_URL": "http://localhost:8787"
+  }
+}

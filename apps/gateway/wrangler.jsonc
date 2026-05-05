@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "the-edge-stack-gateway",
+  "compatibility_date": "2026-05-05",
+  "main": "src/index.ts",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "services": [
+    {
+      "binding": "API",
+      "service": "the-edge-stack-api"
+    },
+    {
+      "binding": "DASHBOARD",
+      "service": "the-edge-stack-dashboard"
+    },
+    {
+      "binding": "BLOG",
+      "service": "the-edge-stack-blog"
+    },
+    {
+      "binding": "LANDING",
+      "service": "the-edge-stack-landing"
+    },
+    {
+      "binding": "DOCS",
+      "service": "the-edge-stack-docs"
+    }
+  ]
+}

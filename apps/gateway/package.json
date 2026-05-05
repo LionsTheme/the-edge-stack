@@ -6,12 +6,13 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "build": "tsc",
+    "cf-typegen": "wrangler types",
     "clean": "rm -rf dist"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240403.0",
     "@repo/typescript-config": "workspace:*",
     "typescript": "^5.4.0",
-    "wrangler": "^3.50.0"
+    "wrangler": "^4.0.0"
   }
 }
