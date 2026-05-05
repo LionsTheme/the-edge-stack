@@ -1,0 +1,32 @@
+---
+title: Stack Overview
+description: Understanding the architecture decisions
+---
+
+## Edge-First Design
+
+Traditional serverful architectures require users to connect to a central server, often hundreds of milliseconds away. The Edge Stack deploys your code to 300+ locations worldwide, reducing latency to single-digit milliseconds.
+
+## Micro-Frontend Strategy
+
+We separate concerns into independent deployable units:
+
+| App | Technology | Purpose |
+|-----|-----------|---------|
+| API | Hono + Cloudflare Workers | Type-safe REST API |
+| Dashboard | TanStack Start | Interactive admin interface |
+| Landing | Astro | Marketing page (static) |
+| Blog | Astro | Content marketing (static + MDX) |
+| Docs | Starlight | Technical documentation |
+
+## Unified Domain
+
+All apps are served under a single domain via the Cloudflare Gateway Worker:
+
+- `/api/*` → API
+- `/app/*` → Dashboard
+- `/blog/*` → Blog
+- `/docs/*` → Documentation
+- `/*` → Landing
+
+This eliminates CORS issues and simplifies authentication.

@@ -1,0 +1,15 @@
+{
+  "name": "@repo/testing",
+  "version": "0.0.0",
+  "private": true,
+  "files": [
+    "vitest.config.ts",
+    "setup.ts"
+  ],
+  "devDependencies": {
+    "vitest": "^1.5.0",
+    "@cloudflare/vitest-pool-workers": "^0.4.0",
+    "@testing-library/react": "^14.3.0",
+    "jsdom": "^24.0.0"
+  }
+}

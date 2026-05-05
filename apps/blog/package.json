@@ -1,0 +1,24 @@
+{
+  "name": "@repo/blog",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "astro": "^4.6.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "@astrojs/mdx": "^2.3.0",
+    "@repo/tailwind-config": "workspace:*"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.4.0"
+  }
+}

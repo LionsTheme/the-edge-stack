@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="The Edge Stack">
+  <main class="flex flex-col items-center justify-center min-h-screen p-4">
+    <h1 class="text-4xl font-bold mb-4">The Edge Stack</h1>
+    <p class="text-lg text-muted-foreground max-w-2xl text-center">
+      Edge-first monorepo boilerplate with Turborepo, Hono, Drizzle, Neon, TanStack Start, Astro, and Cloudflare Workers.
+    </p>
+    <div class="mt-8 flex gap-4">
+      <a href="/app" class="px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors">
+        Go to Dashboard
+      </a>
+      <a href="/docs" class="px-6 py-3 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80 transition-colors">
+        Documentation
+      </a>
+    </div>
+  </main>
+</Layout>

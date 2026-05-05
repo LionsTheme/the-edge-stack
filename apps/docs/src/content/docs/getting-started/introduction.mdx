@@ -1,0 +1,27 @@
+---
+title: Introduction
+description: Overview of The Edge Stack
+---
+
+The Edge Stack is an opinionated monorepo boilerplate designed for building ultra-fast, edge-optimized applications. It combines the best modern tools into a cohesive development experience.
+
+## Architecture
+
+Our stack follows an **edge-first** mindset, minimizing cold starts and maximizing proximity to users:
+
+- **Turborepo + pnpm**: Monorepo orchestration with remote caching
+- **Hono.js**: Ultra-lightweight framework for Cloudflare Workers
+- **Drizzle ORM + Neon**: Type-safe database with serverless Postgres
+- **Better Auth**: Stateless authentication optimized for edge runtimes
+- **TanStack Start**: SSR dashboard with fine-grained control
+- **Astro + Starlight**: Static content and documentation
+- **Shadcn/ui + Tailwind**: Shared atomic design system
+
+## Philosophy
+
+Every decision in this stack prioritizes:
+
+1. **Performance**: Edge deployment means minimal latency
+2. **Type Safety**: End-to-end types from database to frontend
+3. **Developer Experience**: Shared configs, consistent tooling, fast feedback loops
+4. **Scalability**: Serverless by default, pay-per-request economics

@@ -1,0 +1,42 @@
+---
+title: API Design
+description: How the Hono API works
+---
+
+## Hono RPC
+
+Our API uses Hono's RPC feature to share types between backend and frontend automatically.
+
+```ts
+// apps/api/src/index.ts
+import { Hono } from 'hono';
+
+const app = new Hono().basePath('/api');
+
+const route = app
+  .get('/me', (c) => {
+    return c.json({ user: null });
+  });
+
+export type AppType = typeof route;
+export default app;
+```
+
+## Type-Safe Client
+
+The dashboard consumes the API with full type inference:
+
+```ts
+// apps/dashboard/src/lib/api.ts
+import { hc } from 'hono/client';
+import type { AppType } from '@repo/api';
+
+export const api = hc<AppType>('/api');
+
+// Fully typed!
+const { data } = await api.api.me.$get();
+```
+
+## Authentication
+
+Better Auth runs directly inside the API Worker. Sessions are stored in the database with JWT tokens, making the architecture completely stateless.
