@@ -4,6 +4,10 @@ Edge-first monorepo boilerplate designed for ultra-fast applications. Built with
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/LionsTheme/the-edge-stack)
 
+> **📚 Documentación Extendida:** Visita nuestra [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki) para guías detalladas paso a paso sobre cada tecnología del stack.
+
+---
+
 ## ✨ Features
 
 - ⚡ **Edge-First**: Deploy to 300+ locations worldwide with Cloudflare Workers
@@ -15,38 +19,56 @@ Edge-first monorepo boilerplate designed for ultra-fast applications. Built with
 - 🧪 **Testing Ready**: Vitest with Cloudflare Workers pool
 - 📚 **Documentation**: Astro Starlight with shared design tokens
 
+---
+
 ## 🏗️ Architecture
 
 ```
-the-edge-stack/
-├── apps/
-│   ├── api/          # Hono API (Cloudflare Worker)
-│   ├── dashboard/    # TanStack Start app
-│   ├── landing/      # Astro landing page
-│   ├── blog/         # Astro blog
-│   ├── docs/         # Starlight documentation
-│   └── gateway/      # Cloudflare Gateway Worker
-├── packages/
-│   ├── database/     # Drizzle schema + Neon client
-│   ├── auth/         # Better Auth configuration
-│   ├── ui/           # Shared UI components (Shadcn)
-│   ├── tailwind-config/
-│   ├── typescript-config/
-│   ├── eslint-config/
-│   └── testing/
-└── turbo.json
+                  ┌─────────────────┐
+                  │   Cloudflare    │
+                  │    Gateway      │
+                  └────────┬────────┘
+                           │
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+   ┌────▼────┐      ┌─────▼─────┐     ┌─────▼──────┐
+   │   API   │      │ Dashboard │     │  Landing   │
+   │ (Hono)  │      │(TanStack) │     │  (Astro)   │
+   └────┬────┘      └───────────┘     └────────────┘
+        │
+   ┌────▼────┐
+   │  Neon   │
+   │(Postgres)│
+   └─────────┘
 ```
 
-## 🚀 Quick Start
+### Micro-frontends
+
+| App | Technology | URL Path | Purpose |
+|-----|-----------|----------|---------|
+| API | Hono + Workers | `/api/*` | Type-safe REST API |
+| Dashboard | TanStack Start | `/app/*` | Interactive admin interface |
+| Landing | Astro | `/*` | Marketing page (static) |
+| Blog | Astro | `/blog/*` | Content marketing |
+| Docs | Starlight | `/docs/*` | Technical documentation |
+| Gateway | Cloudflare Worker | `/` | Unified routing |
+
+---
+
+## 📖 Quick Start
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) 20+
-- [pnpm](https://pnpm.io/) 9+
-- [Cloudflare](https://cloudflare.com) account
-- [Neon](https://neon.tech) database
+Before starting, make sure you have:
 
-### 1. Use this template
+- [Node.js](https://nodejs.org/) 20+ installed (`node --version`)
+- [pnpm](https://pnpm.io/) 9+ installed (`pnpm --version`)
+- A [Cloudflare](https://cloudflare.com) account (free)
+- A [Neon](https://neon.tech) database (free tier available)
+
+> **New to these tools?** Check our [Wiki - Getting Started](https://github.com/LionsTheme/the-edge-stack/wiki) for detailed setup instructions.
+
+### 1. Create from Template
 
 Click **"Use this template"** on GitHub or clone directly:
 
@@ -55,39 +77,69 @@ git clone https://github.com/LionsTheme/the-edge-stack.git
 cd the-edge-stack
 ```
 
-### 2. Install dependencies
+### 2. Install Dependencies
 
 ```bash
 pnpm install
 ```
 
-### 3. Configure environment
+> **What is pnpm?** It's a fast, disk space efficient package manager. Learn more in our [Wiki - Turborepo & pnpm](https://github.com/LionsTheme/the-edge-stack/wiki/Turborepo-y-pnpm).
+
+### 3. Configure Environment Variables
 
 ```bash
+# Copy the example file
 cp .env.example .env
-# Edit .env with your values
+
+# Edit with your values (see detailed guide below)
+nano .env   # or vim, code, etc.
 ```
 
-### 4. Run database migrations
+**Required variables:**
+
+| Variable | Where to get it | Guide |
+|----------|----------------|-------|
+| `DATABASE_URL` | [Neon Dashboard](https://console.neon.tech) | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Neon-PostgreSQL) |
+| `AUTH_SECRET` | Generate locally | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Better-Auth) |
+| `APP_URL` | Your app URL | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) |
+| `GOOGLE_CLIENT_ID` | [Google Cloud Console](https://console.cloud.google.com) | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) |
+| `GOOGLE_CLIENT_SECRET` | [Google Cloud Console](https://console.cloud.google.com) | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) |
+
+> **📖 Detailed env setup:** See [Wiki - Variables de Entorno](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) for step-by-step instructions with screenshots.
+
+### 4. Setup Database
 
 ```bash
+# Run migrations
 pnpm db:migrate
+
+# (Optional) Generate initial types
+pnpm db:generate
 ```
 
-### 5. Start development
+> **What are migrations?** They're versioned SQL files that update your database schema safely. Learn more in [Wiki - Drizzle ORM](https://github.com/LionsTheme/the-edge-stack/wiki/Drizzle-ORM).
+
+### 5. Start Development
 
 ```bash
 pnpm dev
 ```
 
 This starts all apps in parallel:
-- API: http://localhost:8787
-- Dashboard: http://localhost:3000
-- Landing: http://localhost:4321
-- Blog: http://localhost:4322
-- Docs: http://localhost:4323
+
+| App | URL | Description |
+|-----|-----|-------------|
+| API | http://localhost:8787 | Hono API with RPC |
+| Dashboard | http://localhost:3000 | TanStack Start app |
+| Landing | http://localhost:4321 | Astro landing page |
+| Blog | http://localhost:4322 | Astro blog |
+| Docs | http://localhost:4323 | Starlight documentation |
+
+---
 
 ## 📝 Available Scripts
+
+Run from the root directory:
 
 | Command | Description |
 |---------|-------------|
@@ -99,51 +151,143 @@ This starts all apps in parallel:
 | `pnpm db:migrate` | Apply database migrations |
 | `pnpm clean` | Clean all build outputs |
 
+Run in a specific app/package:
+
+```bash
+# Example: start only the API
+pnpm --filter @repo/api dev
+
+# Example: build only UI package
+pnpm --filter @repo/ui build
+```
+
+---
+
 ## 🌐 Deployment
 
-### Cloudflare Workers
+### Architecture Overview
 
-Each Worker app (`api`, `gateway`) can be deployed with Wrangler:
+```
+User → Cloudflare Gateway → [API | Dashboard | Landing | Blog | Docs]
+                                    │
+                              Neon PostgreSQL
+```
 
+### Step-by-Step Deployment
+
+**1. API Worker**
 ```bash
 cd apps/api
 wrangler deploy
 ```
 
-### Astro Apps (Landing, Blog, Docs)
-
-Deploy to Cloudflare Pages or any static host:
-
+**2. Gateway Worker**
 ```bash
-cd apps/landing
-pnpm build
-# Upload dist/ to your static host
+cd apps/gateway
+wrangler deploy
 ```
 
-### TanStack Start (Dashboard)
+**3. Static Apps**
+```bash
+# Landing
+cd apps/landing && pnpm build && wrangler pages deploy dist
 
-Deploy to Cloudflare Pages:
+# Blog
+cd apps/blog && pnpm build && wrangler pages deploy dist
 
+# Docs
+cd apps/docs && pnpm build && wrangler pages deploy dist
+```
+
+**4. Dashboard**
 ```bash
 cd apps/dashboard
 pnpm build
+wrangler pages deploy .output
 ```
 
-### Database Migrations in CI/CD
+> **📖 Detailed deployment guide:** See [Wiki - Despliegue](https://github.com/LionsTheme/the-edge-stack/wiki/Despliegue) for production checklists, CI/CD setup, and DNS configuration.
 
-Migrations run automatically on push to `main` via GitHub Actions. See `.github/workflows/migrate.yml`.
+---
+
+## 📚 Documentation
+
+### Wiki (Recommended for Beginners)
+
+Our [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki) contains detailed guides for every technology:
+
+- [Variables de Entorno](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) - Complete env setup guide
+- [Turborepo & pnpm](https://github.com/LionsTheme/the-edge-stack/wiki/Turborepo-y-pnpm) - Understanding the monorepo
+- [Neon PostgreSQL](https://github.com/LionsTheme/the-edge-stack/wiki/Neon-PostgreSQL) - Database setup
+- [Drizzle ORM](https://github.com/LionsTheme/the-edge-stack/wiki/Drizzle-ORM) - Database operations
+- [Better Auth](https://github.com/LionsTheme/the-edge-stack/wiki/Better-Auth) - Authentication setup
+- [Hono API](https://github.com/LionsTheme/the-edge-stack/wiki/Hono-API) - API development
+- [TanStack Start](https://github.com/LionsTheme/the-edge-stack/wiki/TanStack-Start) - Dashboard development
+- [Astro](https://github.com/LionsTheme/the-edge-stack/wiki/Astro) - Landing & blog
+- [Starlight](https://github.com/LionsTheme/the-edge-stack/wiki/Astro-Starlight) - Documentation
+- [Shadcn & Tailwind](https://github.com/LionsTheme/the-edge-stack/wiki/Shadcn-y-Tailwind) - UI components
+- [Cloudflare Workers](https://github.com/LionsTheme/the-edge-stack/wiki/Cloudflare-Workers) - Edge computing
+- [Deployment](https://github.com/LionsTheme/the-edge-stack/wiki/Despliegue) - Production deployment
+- [FAQ](https://github.com/LionsTheme/the-edge-stack/wiki/FAQ) - Common questions
+
+### In-Repo Docs
+
+- `.env.example` - Detailed environment variable explanations
+- `apps/docs/` - Full documentation site built with Starlight
+
+---
+
+## 🏗️ Project Structure
+
+```
+the-edge-stack/
+├── apps/
+│   ├── api/              # Hono API (Cloudflare Worker)
+│   │   ├── src/
+│   │   │   ├── index.ts      # API routes
+│   │   │   └── index.test.ts # API tests
+│   │   └── wrangler.toml
+│   ├── dashboard/        # TanStack Start SSR app
+│   │   ├── app/
+│   │   │   ├── routes/       # File-based routes
+│   │   │   ├── router.tsx    # Router config
+│   │   │   └── client.tsx    # Client entry
+│   │   └── app.config.ts
+│   ├── landing/          # Astro landing page
+│   ├── blog/             # Astro blog (MDX)
+│   ├── docs/             # Starlight documentation
+│   └── gateway/          # Cloudflare Gateway Worker
+├── packages/
+│   ├── database/         # Drizzle schema + Neon client
+│   ├── auth/             # Better Auth configuration
+│   ├── ui/               # Shared UI components (Shadcn)
+│   ├── tailwind-config/  # Shared Tailwind config
+│   ├── typescript-config/# Shared TS configs
+│   ├── eslint-config/    # Shared ESLint configs
+│   └── testing/          # Shared testing utilities
+├── .github/workflows/    # CI/CD pipelines
+├── turbo.json            # Turborepo pipeline
+├── pnpm-workspace.yaml   # pnpm workspace config
+└── .env.example          # Environment template
+```
+
+---
 
 ## 🔗 Gateway Routing
 
 The Cloudflare Gateway Worker unifies all apps under a single domain:
 
-| Path | Destination |
-|------|-------------|
-| `/api/*` | API Worker |
-| `/app/*` | Dashboard |
-| `/blog/*` | Blog |
-| `/docs/*` | Documentation |
-| `/*` | Landing page |
+| Path | Destination | Technology |
+|------|-------------|------------|
+| `/api/*` | API Worker | Hono + Cloudflare Workers |
+| `/app/*` | Dashboard | TanStack Start |
+| `/blog/*` | Blog | Astro |
+| `/docs/*` | Documentation | Starlight |
+| `/*` | Landing page | Astro |
+
+This eliminates CORS issues and simplifies authentication.
+
+---
 
 ## 🤝 Contributing
 
@@ -153,17 +297,21 @@ The Cloudflare Gateway Worker unifies all apps under a single domain:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+---
+
 ## 🙏 Acknowledgments
 
-- [Hono](https://hono.dev)
-- [Drizzle ORM](https://orm.drizzle.team)
-- [TanStack](https://tanstack.com)
-- [Astro](https://astro.build)
-- [Starlight](https://starlight.astro.build)
-- [Better Auth](https://better-auth.com)
-- [Neon](https://neon.tech)
-- [Cloudflare Workers](https://workers.cloudflare.com)
+- [Hono](https://hono.dev) - Ultralight web framework
+- [Drizzle ORM](https://orm.drizzle.team) - Type-safe SQL
+- [TanStack](https://tanstack.com) - Modern React tools
+- [Astro](https://astro.build) - Content-focused web framework
+- [Starlight](https://starlight.astro.build) - Documentation framework
+- [Better Auth](https://better-auth.com) - Authentication for the edge
+- [Neon](https://neon.tech) - Serverless PostgreSQL
+- [Cloudflare Workers](https://workers.cloudflare.com) - Edge computing platform
