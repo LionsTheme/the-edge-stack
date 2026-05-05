@@ -13,7 +13,35 @@ name = "the-edge-stack-api"
 main = "src/index.ts"
 compatibility_date = "2024-04-03"
 
-# Variables públicas (visibles en el código)
+# ═══════════════════════════════════════════════════════════
+# BUILD CONFIGURATION (Workers Builds / Custom Build)
+# ═══════════════════════════════════════════════════════════
+[build]
+command = "npm run build"
+
+# ═══════════════════════════════════════════════════════════
+# PERFORMANCE & LIMITS
+# ═══════════════════════════════════════════════════════════
+# Define resource limits for production. Free plan defaults:
+# - CPU: 50ms per request
+# - Subrequests: 50 per request
+# - Memory: 128MB
+[limits]
+# cpu_ms = 30000  # Uncomment to override (default: 30000 = 30s)
+# subrequests = 50  # Uncomment to override
+
+# ═══════════════════════════════════════════════════════════
+# BUNDLE OPTIMIZATION
+# ═══════════════════════════════════════════════════════════
+# Exclude files from the Worker bundle to reduce size
+[rules]
+# type = "Text"
+# globs = ["**/*.md"]
+# fallthrough = true
+
+# ═══════════════════════════════════════════════════════════
+# ENVIRONMENT VARIABLES (Públicas)
+# ═══════════════════════════════════════════════════════════
 [vars]
 APP_URL = "http://localhost:8787"
 

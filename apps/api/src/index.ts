@@ -12,15 +12,31 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
 
+// Security headers middleware
+app.use("/*", async (c, next) => {
+  await next();
+  c.header("X-Content-Type-Options", "nosniff");
+  c.header("X-Frame-Options", "DENY");
+  c.header("X-XSS-Protection", "1; mode=block");
+});
+
+// Structured error logging
 app.onError((err, c) => {
-  console.error(`[Error] ${err.message}`, {
+  console.error(JSON.stringify({
+    level: "error",
+    message: err.message,
     stack: err.stack,
     path: c.req.path,
-  });
+    method: c.req.method,
+    timestamp: new Date().toISOString(),
+  }));
   return c.json({ error: "Internal Server Error" }, 500);
 });
 
 const route = app
+  .get("/health", (c) => {
+    return c.json({ status: "ok", timestamp: new Date().toISOString() });
+  })
   .get("/me", async (c) => {
     const auth = createAuth(c.env);
     const session = await auth.api.getSession({
