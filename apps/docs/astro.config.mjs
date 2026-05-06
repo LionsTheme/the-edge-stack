@@ -1,34 +1,36 @@
+// @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+
 import cloudflare from '@astrojs/cloudflare';
 
+// https://astro.build/config
 export default defineConfig({
   integrations: [
-    cloudflare(),
-    starlight({
-      title: 'The Edge Stack',
-      social: {
-        github: 'https://github.com/LionsTheme/the-edge-stack',
+      starlight({
+          title: 'My Docs',
+          social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
+          sidebar: [
+              {
+                  label: 'Guides',
+                  items: [
+                      // Each item here is one entry in the navigation menu.
+                      { label: 'Example Guide', slug: 'guides/example' },
+                  ],
+              },
+              {
+                  label: 'Reference',
+                  autogenerate: { directory: 'reference' },
+              },
+          ],
+      }),
+	],
+
+  adapter: cloudflare({
+      platformProxy: {
+          enabled: true
       },
-      sidebar: [
-        {
-          label: 'Getting Started',
-          items: [
-            { label: 'Introduction', link: '/getting-started/introduction/' },
-            { label: 'Installation', link: '/getting-started/installation/' },
-          ],
-        },
-        {
-          label: 'Architecture',
-          items: [
-            { label: 'Stack Overview', link: '/architecture/overview/' },
-            { label: 'API Design', link: '/architecture/api/' },
-          ],
-        },
-      ],
-      customCss: ['./src/styles/custom.css'],
-    }),
-  ],
-  outDir: './dist',
-  base: '/docs',
+
+      imageService: "cloudflare"
+  }),
 });

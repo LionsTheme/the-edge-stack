@@ -1,26 +1,34 @@
 {
   "name": "@repo/landing",
-  "version": "0.0.0",
-  "private": true,
   "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
-    "deploy": "astro build && wrangler deploy",
-    "clean": "rm -rf dist"
+    "preview": "astro build && wrangler pages dev",
+    "astro": "astro",
+    "generate-types": "wrangler types",
+    "deploy": "astro build && wrangler pages deploy",
+    "cf-typegen": "wrangler types",
+    "lint": "biome lint .",
+    "format": "biome format .",
+    "check": "biome check ."
   },
   "dependencies": {
-    "astro": "^5.7.0",
-    "@astrojs/cloudflare": "^12.5.0",
-    "@astrojs/tailwind": "^6.0.0",
-    "@repo/tailwind-config": "workspace:*"
+    "@repo/ui": "workspace:*",
+    "@astrojs/cloudflare": "^13.3.1",
+    "astro": "^6.2.2"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "tailwindcss": "^3.4.17",
-    "typescript": "^5.8.3",
-    "wrangler": "^4.26.0"
+    "@repo/biome-config": "workspace:*",
+    "@biomejs/biome": "2.4.14",
+    "@types/node": "25.6.0",
+    "wrangler": "^4.88.0"
+  },
+  "overrides": {
+    "vite": "^7.3.2"
   }
 }
