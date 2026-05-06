@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["node_modules", "dist", "build", ".output", ".next"]
+    "ignore": ["node_modules", "dist", "build", ".output", ".next", "worker-configuration.d.ts"]
   },
   "formatter": {
     "enabled": true,
