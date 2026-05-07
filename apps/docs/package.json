@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "astro dev",
 		"start": "astro dev",
+		"typecheck": "tsc --noEmit",
 		"build": "astro build",
 		"preview": "astro build && wrangler pages dev",
 		"prepare": "astro sync",

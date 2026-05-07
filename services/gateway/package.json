@@ -9,6 +9,7 @@
 		"cf-typegen": "wrangler types",
 		"clean": "rm -rf dist",
 		"lint": "biome lint .",
+		"typecheck": "tsc --noEmit",
 		"format": "biome format .",
 		"check": "biome check ."
 	},
