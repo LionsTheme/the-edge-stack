@@ -49,11 +49,5 @@
     "vite": "^8.0.11",
     "vitest": "^4.1.5",
     "wrangler": "^4.88.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "lightningcss"
-    ]
   }
 }
