@@ -2,9 +2,16 @@
   "name": "@repo/typescript-config",
   "version": "0.0.0",
   "private": true,
+  "exports": {
+    "./base": "./base.json",
+    "./react": "./react.json",
+    "./cloudflare": "./cloudflare.json",
+    "./astro": "./astro.json"
+  },
   "files": [
     "base.json",
     "react.json",
-    "cloudflare.json"
+    "cloudflare.json",
+    "astro.json"
   ]
 }

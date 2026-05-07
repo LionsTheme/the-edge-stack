@@ -9,6 +9,7 @@
 		"dev": "astro dev",
 		"build": "astro build",
 		"preview": "astro build && wrangler pages dev",
+		"prepare": "astro sync",
 		"astro": "astro",
 		"generate-types": "wrangler types",
 		"deploy": "astro build && wrangler pages deploy",
@@ -23,8 +24,9 @@
 		"astro": "^6.2.2"
 	},
 	"devDependencies": {
-		"@repo/biome-config": "workspace:*",
 		"@biomejs/biome": "2.4.14",
+		"@cloudflare/workers-types": "^4.20250505.0",
+		"@repo/biome-config": "workspace:*",
 		"@types/node": "25.6.0",
 		"wrangler": "^4.88.0"
 	},
