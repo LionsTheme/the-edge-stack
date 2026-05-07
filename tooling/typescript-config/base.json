@@ -18,7 +18,5 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true
-  },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "dist", ".turbo"]
+  }
 }

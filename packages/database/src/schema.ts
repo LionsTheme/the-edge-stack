@@ -9,6 +9,7 @@ export const posts = pgTable("posts", {
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 });
 
-export const postsRelations = relations(posts, ({ one }) => ({
-  // Relación opcional si necesitas join
-}));
+export const postsRelations = relations(posts, ({ one }) => {
+  void one; // Required by Drizzle's API -- configure when adding relations
+  return {};
+});

@@ -30,8 +30,9 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.14",
-		"@cloudflare/workers-types": "^4.20250505.0",
+		"@cloudflare/workers-types": "^4.20260507.1",
 		"@repo/biome-config": "workspace:*",
+		"@repo/typescript-config": "workspace:*",
 		"@types/node": "25.6.0",
 		"wrangler": "^4.88.0"
 	},

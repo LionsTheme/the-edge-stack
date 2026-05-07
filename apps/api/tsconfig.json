@@ -1,5 +1,6 @@
 {
   "extends": "@repo/typescript-config/cloudflare.json",
+  "include": ["src/**/*.ts", "src/**/*.tsx", "./worker-configuration.d.ts"],
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["ESNext"],

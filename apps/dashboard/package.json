@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@repo/biome-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@biomejs/biome": "2.4.14",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/devtools-vite": "latest",

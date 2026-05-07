@@ -1,4 +1,4 @@
-import { drizzle } from "drizzle-orm/neon-serverless";
+import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 import * as schema from "./schema";
 
@@ -20,7 +20,7 @@ async function seed() {
   console.log("🌱 Seeding database...");
 
   const sql = neon(databaseUrl);
-  const db = drizzle(sql, { schema });
+  const db = drizzle({ client: sql, schema });
 
   // Insert sample posts
   await db.insert(schema.posts).values([
