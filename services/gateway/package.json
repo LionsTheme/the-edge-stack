@@ -9,16 +9,16 @@
 		"cf-typegen": "wrangler types",
 		"clean": "rm -rf dist",
 		"lint": "biome lint .",
-		"typecheck": "tsc --noEmit",
 		"format": "biome format .",
-		"check": "biome check ."
+		"check": "biome check .",
+		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.14",
-		"@cloudflare/workers-types": "^4.20250505.0",
 		"@repo/biome-config": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
-		"typescript": "^5.8.3",
-		"wrangler": "^4.26.0"
+		"@biomejs/biome": "2.4.14",
+		"@cloudflare/workers-types": "^4.20260507.1",
+		"typescript": "^6.0.3",
+		"wrangler": "^4.88.0"
 	}
 }

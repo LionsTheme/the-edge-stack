@@ -21,17 +21,17 @@
 	},
 	"dependencies": {
 		"@repo/ui": "workspace:*",
-		"@astrojs/cloudflare": "^13.3.1",
-		"astro": "^6.2.2"
+		"@astrojs/cloudflare": "^13.4.0",
+		"astro": "^6.3.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.14",
-		"@cloudflare/workers-types": "^4.20250505.0",
 		"@repo/biome-config": "workspace:*",
+		"@biomejs/biome": "2.4.14",
+		"@cloudflare/workers-types": "^4.20260507.1",
 		"@types/node": "25.6.0",
 		"wrangler": "^4.88.0"
 	},
 	"overrides": {
-		"vite": "^7.3.2"
+		"vite": "^7.3.3"
 	}
 }

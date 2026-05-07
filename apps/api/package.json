@@ -6,9 +6,9 @@
 		"deploy": "wrangler deploy --minify",
 		"cf-typegen": "wrangler types --env-interface CloudflareBindings",
 		"lint": "biome lint .",
-		"typecheck": "tsc --noEmit",
 		"format": "biome format .",
-		"check": "biome check ."
+		"check": "biome check .",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@repo/auth": "workspace:*",
@@ -16,9 +16,9 @@
 		"hono": "^4.12.18"
 	},
 	"devDependencies": {
+		"@repo/biome-config": "workspace:*",
 		"@biomejs/biome": "2.4.14",
 		"@cloudflare/workers-types": "^4.20250505.0",
-		"@repo/biome-config": "workspace:*",
 		"@types/node": "25.6.0",
 		"wrangler": "^4.88.0"
 	}
