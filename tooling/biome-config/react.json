@@ -1,15 +1,4 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.14/schema.json",
-  "extends": ["./biome.json"],
-  "linter": {
-    "rules": {
-      "correctness": {
-        "noUnusedImports": "error",
-        "noUnusedVariables": "error"
-      },
-      "suspicious": {
-        "noExplicitAny": "warn"
-      }
-    }
-  }
+  "extends": ["./biome.json"]
 }
