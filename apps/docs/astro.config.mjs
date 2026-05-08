@@ -1,6 +1,7 @@
 // @ts-check
 
 import cloudflare from "@astrojs/cloudflare";
+import react from "@astrojs/react";
 import starlight from "@astrojs/starlight";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
@@ -8,6 +9,7 @@ import { defineConfig } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
 	integrations: [
+		react(),
 		starlight({
 			title: "My Docs",
 			customCss: ["./src/styles/global.css"],
@@ -45,5 +47,8 @@ export default defineConfig({
 	vite: {
 		resolve: { tsconfigPaths: true },
 		plugins: [tailwindcss()],
+		ssr: {
+			noExternal: ["@repo/ui", "@repo/tailwind-config"],
+		},
 	},
 });

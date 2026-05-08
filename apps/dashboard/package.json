@@ -17,7 +17,7 @@
     "deploy": "pnpm run build && wrangler deploy"
   },
   "dependencies": {
-    "@cloudflare/vite-plugin": "^1.36.0",
+    "@cloudflare/vite-plugin": "^1.36.3",
     "@repo/auth": "workspace:*",
     "@repo/database": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
@@ -27,10 +27,10 @@
     "@tanstack/react-router-devtools": "latest",
     "@tanstack/react-router-ssr-query": "latest",
     "@tanstack/react-start": "latest",
-    "@tanstack/router-plugin": "^1.167.34",
+    "@tanstack/router-plugin": "^1.167.35",
     "lucide-react": "^1.14.0",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5"
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.14",
@@ -41,7 +41,7 @@
     "@tanstack/devtools-vite": "latest",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
-    "@types/node": "^24.12.2",
+    "@types/node": "^25.6.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
@@ -50,6 +50,6 @@
     "tailwindcss": "4.2.4",
     "vite": "^8.0.11",
     "vitest": "^4.1.5",
-    "wrangler": "^4.88.0"
+    "wrangler": "^4.90.0"
   }
 }
