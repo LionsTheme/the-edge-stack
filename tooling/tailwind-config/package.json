@@ -2,14 +2,13 @@
   "name": "@repo/tailwind-config",
   "version": "0.0.0",
   "private": true,
-  "main": "index.ts",
-  "types": "index.ts",
+  "exports": {
+    ".": "./index.css"
+  },
   "files": [
-    "index.ts",
-    "tokens.css"
+    "index.css"
   ],
-  "devDependencies": {
-    "tailwindcss": "^4.2.4",
-    "typescript": "^6.0.3"
+  "peerDependencies": {
+    "tailwindcss": "^4.2.4"
   }
 }

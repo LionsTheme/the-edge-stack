@@ -17,10 +17,11 @@
     "deploy": "pnpm run build && wrangler deploy"
   },
   "dependencies": {
+    "@cloudflare/vite-plugin": "^1.36.0",
     "@repo/auth": "workspace:*",
     "@repo/database": "workspace:*",
+    "@repo/tailwind-config": "workspace:*",
     "@repo/ui": "workspace:*",
-    "@cloudflare/vite-plugin": "^1.36.0",
     "@tailwindcss/vite": "^4.2.4",
     "@tanstack/react-devtools": "latest",
     "@tanstack/react-router": "latest",
@@ -34,9 +35,9 @@
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.4.14",
     "@repo/biome-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@biomejs/biome": "2.4.14",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/devtools-vite": "latest",
     "@testing-library/dom": "^10.4.1",

@@ -2,6 +2,7 @@
 
 import cloudflare from "@astrojs/cloudflare";
 import starlight from "@astrojs/starlight";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 
 // https://astro.build/config
@@ -9,6 +10,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: "My Docs",
+			customCss: ["./src/styles/global.css"],
 			social: [
 				{
 					icon: "github",
@@ -39,4 +41,9 @@ export default defineConfig({
 
 		imageService: "cloudflare",
 	}),
+
+	vite: {
+		resolve: { tsconfigPaths: true },
+		plugins: [tailwindcss()],
+	},
 });

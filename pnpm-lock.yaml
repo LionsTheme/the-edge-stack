@@ -28,7 +28,7 @@ importers:
         specifier: 2.4.14
         version: 2.4.14
       '@cloudflare/workers-types':
-        specifier: ^4.20250505.0
+        specifier: ^4.20260507.1
         version: 4.20260507.1
       '@repo/biome-config':
         specifier: workspace:*
@@ -57,21 +57,30 @@ importers:
       '@astrojs/sitemap':
         specifier: ^3.7.2
         version: 3.7.2
+      '@repo/tailwind-config':
+        specifier: workspace:*
+        version: link:../../tooling/tailwind-config
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@tailwindcss/vite':
+        specifier: ^4.2.4
+        version: 4.2.4(vite@8.0.11(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0))
       astro:
         specifier: ^6.2.2
         version: 6.2.2(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.3)(tsx@4.21.0)
       sharp:
         specifier: ^0.34.5
         version: 0.34.5
+      tailwindcss:
+        specifier: ^4.2.4
+        version: 4.2.4
     devDependencies:
       '@biomejs/biome':
         specifier: 2.4.14
         version: 2.4.14
       '@cloudflare/workers-types':
-        specifier: ^4.20250505.0
+        specifier: ^4.20260507.1
         version: 4.20260507.1
       '@repo/biome-config':
         specifier: workspace:*
@@ -97,6 +106,9 @@ importers:
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@repo/tailwind-config':
+        specifier: workspace:*
+        version: link:../../tooling/tailwind-config
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -191,21 +203,30 @@ importers:
       '@astrojs/starlight':
         specifier: ^0.39.0
         version: 0.39.0(astro@6.2.2(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.3)(tsx@4.21.0))(typescript@6.0.3)
+      '@repo/tailwind-config':
+        specifier: workspace:*
+        version: link:../../tooling/tailwind-config
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@tailwindcss/vite':
+        specifier: ^4.2.4
+        version: 4.2.4(vite@8.0.11(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0))
       astro:
         specifier: ^6.2.2
         version: 6.2.2(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.3)(tsx@4.21.0)
       sharp:
         specifier: ^0.34.5
         version: 0.34.5
+      tailwindcss:
+        specifier: ^4.2.4
+        version: 4.2.4
     devDependencies:
       '@biomejs/biome':
         specifier: 2.4.14
         version: 2.4.14
       '@cloudflare/workers-types':
-        specifier: ^4.20250505.0
+        specifier: ^4.20260507.1
         version: 4.20260507.1
       '@repo/biome-config':
         specifier: workspace:*
@@ -225,12 +246,21 @@ importers:
       '@astrojs/cloudflare':
         specifier: ^13.4.0
         version: 13.4.0(@types/node@25.6.0)(astro@6.3.0(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.3)(tsx@4.21.0))(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.21.0)(wrangler@4.88.0(@cloudflare/workers-types@4.20260507.1))
+      '@repo/tailwind-config':
+        specifier: workspace:*
+        version: link:../../tooling/tailwind-config
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@tailwindcss/vite':
+        specifier: ^4.2.4
+        version: 4.2.4(vite@8.0.11(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0))
       astro:
         specifier: ^6.3.0
         version: 6.3.0(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.3)(tsx@4.21.0)
+      tailwindcss:
+        specifier: ^4.2.4
+        version: 4.2.4
     devDependencies:
       '@biomejs/biome':
         specifier: 2.4.14
@@ -325,12 +355,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
-      autoprefixer:
-        specifier: ^10.5.0
-        version: 10.5.0(postcss@8.5.14)
-      postcss:
-        specifier: ^8.5.14
-        version: 8.5.14
       react:
         specifier: ^19.2.6
         version: 19.2.6
@@ -365,13 +389,10 @@ importers:
   tooling/biome-config: {}
 
   tooling/tailwind-config:
-    devDependencies:
+    dependencies:
       tailwindcss:
         specifier: ^4.2.4
         version: 4.2.4
-      typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
 
   tooling/testing:
     devDependencies:
@@ -2587,13 +2608,6 @@ packages:
     engines: {node: '>=22.12.0', npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
-  autoprefixer@10.5.0:
-    resolution: {integrity: sha512-FMhOoZV4+qR6aTUALKX2rEqGG+oyATvwBt9IIzVR5rMa2HRWPkxf+P+PAJLD1I/H5/II+HuZcBJYEFBpq39ong==}
-    engines: {node: ^10 || ^12 || >=14}
-    hasBin: true
-    peerDependencies:
-      postcss: ^8.1.0
-
   axobject-query@4.1.0:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
     engines: {node: '>= 0.4'}
@@ -3146,9 +3160,6 @@ packages:
   fontkitten@1.0.3:
     resolution: {integrity: sha512-Wp1zXWPVUPBmfoa3Cqc9ctaKuzKAV6uLstRqlR56kSjplf5uAce+qeyYym7F+PHbGTk+tCEdkCW6RD7DX/gBZw==}
     engines: {node: '>=20'}
-
-  fraction.js@5.3.4:
-    resolution: {integrity: sha512-1X1NTtiJphryn/uLQz3whtY6jK3fTqoE3ohKs0tT+Ujr1W59oopxmoEh7Lu5p6vBaPbgoM0bzveAW4Qi5RyWDQ==}
 
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
@@ -3829,9 +3840,6 @@ packages:
   postcss-selector-parser@6.1.2:
     resolution: {integrity: sha512-Q8qQfPiZ+THO/3ZrOrO0cJJKfpYCagtMUkXbnEfmgUjwXg6z/WBeOyS9APBBPCTSiDV+s4SwQGu8yFsiMRIudg==}
     engines: {node: '>=4'}
-
-  postcss-value-parser@4.2.0:
-    resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
 
   postcss@8.5.14:
     resolution: {integrity: sha512-SoSL4+OSEtR99LHFZQiJLkT59C5B1amGO1NzTwj7TT1qCUgUO6hxOvzkOYxD+vMrXBM3XJIKzokoERdqQq/Zmg==}
@@ -5997,6 +6005,13 @@ snapshots:
       tailwindcss: 4.2.4
       vite: 8.0.11(@types/node@24.12.2)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0)
 
+  '@tailwindcss/vite@4.2.4(vite@8.0.11(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0))':
+    dependencies:
+      '@tailwindcss/node': 4.2.4
+      '@tailwindcss/oxide': 4.2.4
+      tailwindcss: 4.2.4
+      vite: 8.0.11(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0)
+
   '@tanstack/devtools-client@0.0.6':
     dependencies:
       '@tanstack/devtools-event-client': 0.4.3
@@ -6859,15 +6874,6 @@ snapshots:
       - uploadthing
       - yaml
 
-  autoprefixer@10.5.0(postcss@8.5.14):
-    dependencies:
-      browserslist: 4.28.2
-      caniuse-lite: 1.0.30001792
-      fraction.js: 5.3.4
-      picocolors: 1.1.1
-      postcss: 8.5.14
-      postcss-value-parser: 4.2.0
-
   axobject-query@4.1.0: {}
 
   babel-dead-code-elimination@1.0.12:
@@ -7391,8 +7397,6 @@ snapshots:
   fontkitten@1.0.3:
     dependencies:
       tiny-inflate: 1.0.3
-
-  fraction.js@5.3.4: {}
 
   fsevents@2.3.3:
     optional: true
@@ -8462,8 +8466,6 @@ snapshots:
     dependencies:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
-
-  postcss-value-parser@4.2.0: {}
 
   postcss@8.5.14:
     dependencies:
