@@ -2,6 +2,26 @@
 	"$schema": "https://biomejs.dev/schemas/2.4.14/schema.json",
 	"extends": ["@repo/biome-config/cloudflare"],
 	"files": {
-		"includes": ["**/*", "!worker-configuration.d.ts", "!.astro/content.d.ts"]
-	}
+		"includes": ["**/*", "!worker-configuration.d.ts", "!.astro", "!.wrangler"]
+	},
+	"linter": {
+		"rules": {
+			"complexity": {
+				"noImportantStyles": "off"
+			}
+		}
+	},
+	"overrides": [
+		{
+			"includes": ["**/*.astro"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedImports": "off",
+						"noUnusedVariables": "off"
+					}
+				}
+			}
+		}
+	]
 }
