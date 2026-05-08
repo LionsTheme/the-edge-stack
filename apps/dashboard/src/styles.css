@@ -1,4 +1,4 @@
-@import "@repo/tailwind-config";
+@import "@repo/ui/styles.css";
 
 * {
   box-sizing: border-box;

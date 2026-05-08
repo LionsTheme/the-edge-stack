@@ -21,18 +21,17 @@
 		"@astrojs/cloudflare": "^13.3.1",
 		"@astrojs/starlight": "^0.39.0",
 		"@repo/tailwind-config": "workspace:*",
-		"@repo/ui": "workspace:*",
-		"@tailwindcss/vite": "^4.2.4",
 		"astro": "^6.2.2",
-		"sharp": "^0.34.5",
-		"tailwindcss": "^4.2.4"
+		"sharp": "^0.34.5"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.14",
 		"@cloudflare/workers-types": "^4.20260507.1",
 		"@repo/biome-config": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
+		"@tailwindcss/vite": "^4.2.4",
 		"@types/node": "25.6.0",
+		"tailwindcss": "^4.2.4",
 		"wrangler": "^4.88.0"
 	},
 	"overrides": {

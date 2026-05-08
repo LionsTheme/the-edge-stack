@@ -1,3 +1,4 @@
+import { Button } from "@repo/ui/components/button";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({ component: Home });
@@ -9,6 +10,9 @@ function Home() {
 			<p className="mt-4 text-lg">
 				Edit <code>src/routes/index.tsx</code> to get started.
 			</p>
+			<Button className="mt-4" variant="secondary">
+				Button
+			</Button>
 		</div>
 	);
 }
