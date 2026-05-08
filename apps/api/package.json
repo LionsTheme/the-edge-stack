@@ -1,6 +1,9 @@
 {
 	"name": "@repo/api",
 	"type": "module",
+	"exports": {
+		".": "./src/routes.ts"
+	},
 	"scripts": {
 		"dev": "wrangler dev",
 		"deploy": "wrangler deploy --minify",
@@ -11,9 +14,11 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
+		"@hono/zod-validator": "^0.7.6",
 		"@repo/auth": "workspace:*",
 		"@repo/database": "workspace:*",
-		"hono": "^4.12.18"
+		"hono": "^4.12.18",
+		"zod": "^4.4.3"
 	},
 	"devDependencies": {
 		"@repo/biome-config": "workspace:*",

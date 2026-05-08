@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.36.3",
+    "@repo/api-types": "workspace:*",
     "@repo/auth": "workspace:*",
     "@repo/database": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
@@ -28,6 +29,7 @@
     "@tanstack/react-router-ssr-query": "latest",
     "@tanstack/react-start": "latest",
     "@tanstack/router-plugin": "^1.167.35",
+    "hono": "^4.12.18",
     "lucide-react": "^1.14.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
