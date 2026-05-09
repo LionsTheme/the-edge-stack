@@ -8,6 +8,13 @@
       "when": 1778084013189,
       "tag": "0000_awesome_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1778321353999,
+      "tag": "0001_thick_omega_sentinel",
+      "breakpoints": true
     }
   ]
 }
