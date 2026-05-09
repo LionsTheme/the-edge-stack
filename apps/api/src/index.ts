@@ -4,6 +4,18 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import routes from "./routes";
 
+// Extracted to avoid duplicating 6 env var accesses across middleware handlers.
+function authEnv(c: { env: CloudflareBindings }) {
+	return {
+		DATABASE_URL: c.env.DATABASE_URL,
+		BETTER_AUTH_SECRET: c.env.BETTER_AUTH_SECRET,
+		BETTER_AUTH_URL: c.env.BETTER_AUTH_URL,
+		DASHBOARD_URL: c.env.DASHBOARD_URL,
+		GOOGLE_CLIENT_ID: c.env.GOOGLE_CLIENT_ID,
+		GOOGLE_CLIENT_SECRET: c.env.GOOGLE_CLIENT_SECRET,
+	};
+}
+
 const app = new Hono<{
 	Bindings: CloudflareBindings;
 	Variables: {
@@ -12,13 +24,14 @@ const app = new Hono<{
 	};
 }>();
 
+// CORS origin list — update with your frontend URL(s) for production.
+const allowedOrigins = ["http://localhost:3000"];
+
 app.use(
 	"/api/auth/*",
 	cors({
-		origin: (origin) => {
-			const allowed = ["http://localhost:3000"];
-			return allowed.includes(origin) ? origin : allowed[0];
-		},
+		origin: (origin) =>
+			allowedOrigins.includes(origin) ? origin : allowedOrigins[0],
 		allowHeaders: ["Content-Type", "Authorization"],
 		allowMethods: ["POST", "GET", "OPTIONS"],
 		exposeHeaders: ["Content-Length"],
@@ -30,26 +43,11 @@ app.use(
 // Per-request auth creation required for Workers I/O isolation.
 // https://opennext.js.org/cloudflare/troubleshooting#error-cannot-perform-io-on-behalf-of-a-different-request
 app.on(["POST", "GET"], "/api/auth/*", (c) => {
-	const auth = createAuth({
-		DATABASE_URL: c.env.DATABASE_URL,
-		AUTH_SECRET: c.env.AUTH_SECRET,
-		APP_URL: c.env.APP_URL,
-		DASHBOARD_URL: c.env.DASHBOARD_URL,
-		GOOGLE_CLIENT_ID: c.env.GOOGLE_CLIENT_ID,
-		GOOGLE_CLIENT_SECRET: c.env.GOOGLE_CLIENT_SECRET,
-	});
-	return auth.handler(c.req.raw);
+	return createAuth(authEnv(c)).handler(c.req.raw);
 });
 
 app.use("*", async (c, next) => {
-	const auth = createAuth({
-		DATABASE_URL: c.env.DATABASE_URL,
-		AUTH_SECRET: c.env.AUTH_SECRET,
-		APP_URL: c.env.APP_URL,
-		DASHBOARD_URL: c.env.DASHBOARD_URL,
-		GOOGLE_CLIENT_ID: c.env.GOOGLE_CLIENT_ID,
-		GOOGLE_CLIENT_SECRET: c.env.GOOGLE_CLIENT_SECRET,
-	});
+	const auth = createAuth(authEnv(c));
 
 	const session = await auth.api.getSession({
 		headers: c.req.raw.headers,

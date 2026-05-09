@@ -42,7 +42,45 @@ Edge-first monorepo boilerplate designed for ultra-fast applications. Built with
    └─────────┘
 ```
 
-### Micro-frontends
+### Authentication Flow
+
+Better Auth lives inside `apps/api` (following the [official Hono integration pattern](https://better-auth.com/docs/integrations/hono)), not as a separate package. Any app in the monorepo consumes auth via HTTP:
+
+```
+                  ┌─────────────┐
+                  │  Dashboard  │ ──signIn.social()──►
+                  │ (TanStack)  │ ◄──callbackURL──────
+                  └─────────────┘
+                         │
+                  fetch /api/auth/get-session (cookie)
+                         │
+                         ▼
+                  ┌─────────────┐
+                  │   API       │
+                  │ (Hono+Auth) │ ──betterAuth()──►  PostgreSQL
+                  └─────────────┘
+```
+
+- **Client-side**: `createAuthClient` from `better-auth/react` → typed hooks (`useSession`, `signIn`, `signOut`)
+- **SSR**: `getSession()` server function forwards cookies to the API → validates on the server
+- **Protected routes**: `_protected.tsx` layout with `beforeLoad` redirecting to `/sign-in`
+- **OAuth**: Google provider → API handles callback → session cookie set on API domain
+
+### Hono RPC Types
+
+End-to-end type safety between API and frontend via `@repo/api-types`:
+
+```
+apps/api/src/routes.ts ──export AppType──► packages/api-types ──► apps/dashboard
+                                                 │
+                                          hc<AppType>("/api")
+                                                 │
+                                          api.message.$get() ← autocompletado
+```
+
+- **`apps/api/src/routes.ts`** exports `AppType` from routes (without Cloudflare bindings)
+- **`packages/api-types`** re-exports it for consumption by any frontend
+- **Dashboard** uses `hc<AppType>(url)` from `hono/client` for typed fetch calls
 
 | App | Technology | URL Path | Purpose |
 |-----|-----------|----------|---------|
@@ -105,9 +143,10 @@ nano .env   # or vim, code, etc.
 
 | Variable | Where to get it | Guide |
 |----------|----------------|-------|
-| `DATABASE_URL` | [Neon Dashboard](https://console.neon.tech) | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Neon-PostgreSQL) |
-| `AUTH_SECRET` | Generate locally | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Better-Auth) |
-| `APP_URL` | Your app URL | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) |
+| `DATABASE_URL` | [Neon Dashboard](https://console.neon.tech) or local PostgreSQL | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Neon-PostgreSQL) |
+| `BETTER_AUTH_SECRET` | Generate with `openssl rand -base64 32` | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Better-Auth) |
+| `BETTER_AUTH_URL` | Your API URL (e.g. `http://localhost:8787`) | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) |
+| `DASHBOARD_URL` | Your frontend URL (e.g. `http://localhost:3000`) | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) |
 | `GOOGLE_CLIENT_ID` | [Google Cloud Console](https://console.cloud.google.com) | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) |
 | `GOOGLE_CLIENT_SECRET` | [Google Cloud Console](https://console.cloud.google.com) | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) |
 
@@ -151,20 +190,28 @@ Run from the root directory:
 |---------|-------------|
 | `pnpm dev` | Start all apps in development mode |
 | `pnpm build` | Build all apps for production |
-| `pnpm test` | Run tests across all packages |
-| `pnpm lint` | Run ESLint across all packages |
 | `pnpm db:generate` | Generate Drizzle migrations |
 | `pnpm db:migrate` | Apply database migrations |
+| `pnpm db:studio` | Open Drizzle Studio (GUI) |
+| `pnpm auth:generate` | Regenerate Better Auth Drizzle schema |
 | `pnpm clean` | Clean all build outputs |
 
 Run in a specific app/package:
 
 ```bash
-# Example: start only the API
+# Start the API locally
 pnpm --filter @repo/api dev
 
-# Example: build only UI package
+# Start the Dashboard locally
+pnpm --filter @repo/dashboard dev
+
+# Build only the UI package
 pnpm --filter @repo/ui build
+
+# Regenerate auth schema (after adding plugins/fields)
+cd apps/api && pnpm dlx @better-auth/cli@latest generate \
+  --config ./better-auth.config.ts \
+  --output ../packages/database/src/auth-schema.ts
 ```
 
 ---
@@ -255,35 +302,47 @@ Our [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki) contains detailed 
 ```
 the-edge-stack/
 ├── apps/
-│   ├── api/              # Hono API (Cloudflare Worker)
+│   ├── api/                   # Hono API (Cloudflare Worker)
 │   │   ├── src/
-│   │   │   ├── index.ts      # API routes
-│   │   │   └── index.test.ts # API tests
-│   │   ├── wrangler.toml.example  # Copy to wrangler.toml
-│   │   └── .dev.vars            # Local secrets (gitignored)
-│   ├── dashboard/        # TanStack Start SSR app
-│   │   ├── app/
-│   │   │   ├── routes/       # File-based routes
-│   │   │   ├── router.tsx    # Router config
-│   │   │   └── client.tsx    # Client entry
-│   │   └── app.config.ts
-│   ├── landing/          # Astro landing page
-│   ├── blog/             # Astro blog (MDX)
-│   ├── docs/             # Starlight documentation
-│   └── gateway/          # Cloudflare Gateway Worker
-│       └── wrangler.toml.example  # Copy to wrangler.toml
+│   │   │   ├── index.ts           # Entry point + auth middleware
+│   │   │   ├── routes.ts          # API routes + AppType for RPC
+│   │   │   └── lib/
+│   │   │       └── auth.ts        # Better Auth instance (per-request)
+│   │   ├── better-auth.config.ts  # CLI config for schema generation
+│   │   ├── .dev.vars              # Local secrets (gitignored)
+│   │   └── wrangler.jsonc
+│   ├── dashboard/             # TanStack Start SSR app
+│   │   ├── src/
+│   │   │   ├── routes/            # File-based routes
+│   │   │   │   ├── __root.tsx         # Root layout
+│   │   │   │   ├── index.tsx          # Public home
+│   │   │   │   ├── sign-in.tsx        # Sign-in page (Google OAuth)
+│   │   │   │   ├── _protected.tsx     # Protected layout (auth check)
+│   │   │   │   └── _protected/
+│   │   │   │       └── dashboard.tsx  # Protected dashboard
+│   │   │   ├── lib/
+│   │   │   │   ├── api.ts             # Hono RPC client (type-safe)
+│   │   │   │   ├── auth-client.ts     # Better Auth React client
+│   │   │   │   └── auth.functions.ts  # SSR session check (server fn)
+│   │   │   ├── router.tsx
+│   │   │   └── routeTree.gen.ts
+│   │   └── vite.config.ts
+│   ├── landing/               # Astro landing page
+│   ├── blog/                  # Astro blog (MDX)
+│   ├── docs/                  # Starlight documentation
+│   └── gateway/               # Cloudflare Gateway Worker
 ├── packages/
-│   ├── database/         # Drizzle schema + Neon client
-│   ├── auth/             # Better Auth configuration
-│   ├── ui/               # Shared UI components (Shadcn)
-│   ├── tailwind-config/  # Shared Tailwind config
-│   ├── typescript-config/# Shared TS configs
-│   ├── eslint-config/    # Shared ESLint configs
-│   └── testing/          # Shared testing utilities
-├── .github/workflows/    # CI/CD pipelines
-├── turbo.json            # Turborepo pipeline
-├── pnpm-workspace.yaml   # pnpm workspace config
-└── .env.example          # Environment template
+│   ├── database/              # Drizzle schema, migrations, getDb()
+│   ├── api-types/             # Shared types for Hono RPC (AppType)
+│   ├── ui/                    # Shared UI components (Shadcn)
+│   ├── tailwind-config/       # Shared Tailwind config
+│   └── typescript-config/     # Shared TS configs
+├── tooling/
+├── services/
+├── .github/workflows/         # CI/CD pipelines
+├── turbo.json                 # Turborepo pipeline
+├── pnpm-workspace.yaml        # pnpm workspace config
+└── .env.example               # Environment template
 ```
 
 ---

@@ -4,8 +4,8 @@ import { getDb } from "@repo/database";
 
 export function createAuth(env: {
 	DATABASE_URL: string;
-	AUTH_SECRET: string;
-	APP_URL: string;
+	BETTER_AUTH_SECRET: string;
+	BETTER_AUTH_URL: string;
 	DASHBOARD_URL: string;
 	GOOGLE_CLIENT_ID: string;
 	GOOGLE_CLIENT_SECRET: string;
@@ -13,8 +13,9 @@ export function createAuth(env: {
 	const db = getDb(env.DATABASE_URL);
 	return betterAuth({
 		database: drizzleAdapter(db, { provider: "pg" }),
-		secret: env.AUTH_SECRET,
-		baseURL: env.APP_URL,
+		basePath: "/api/auth",
+		baseURL: env.BETTER_AUTH_URL,
+		secret: env.BETTER_AUTH_SECRET,
 		trustedOrigins: [env.DASHBOARD_URL],
 		socialProviders: {
 			google: {
