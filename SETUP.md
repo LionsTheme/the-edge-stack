@@ -4,18 +4,37 @@ Esta guía te lleva de cero a tener el boilerplate corriendo localmente con aute
 
 ## 📋 Prerrequisitos
 
-- **Node.js 20+** — `node --version`
-- **pnpm 9+** — `pnpm --version`
+- **Node.js >=22.12.0** — `node --version`
+- **pnpm >=10** — habilitar con `corepack enable` (viene incluido en Node.js)
 - **PostgreSQL** — local o [Neon](https://neon.tech) (free tier)
 - **Cuenta de Google Cloud** — para OAuth (Google Console)
 
 ## 🚀 Paso a paso
 
-### 1. Clonar e instalar
+### 1. Crear el proyecto
+
+**Opción A — Usar el template de GitHub (recomendado):**
+
+1. Ir a https://github.com/LionsTheme/the-edge-stack
+2. Click en **"Use this template"** → **"Create a new repository"**
+3. Elegir owner, nombre y visibilidad
+4. Clonar tu nuevo repositorio:
+
+```bash
+git clone https://github.com/<tu-usuario>/<tu-repo>.git
+cd <tu-repo>
+```
+
+**Opción B — Clonar directamente:**
 
 ```bash
 git clone https://github.com/LionsTheme/the-edge-stack.git
 cd the-edge-stack
+```
+
+Luego instalar dependencias:
+
+```bash
 pnpm install
 ```
 
@@ -41,9 +60,15 @@ DASHBOARD_URL=http://localhost:3000
 # Google OAuth
 GOOGLE_CLIENT_ID=<tu-client-id>.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=<tu-client-secret>
+
+# Cloudflare (requerido para deploy)
+CLOUDFLARE_ACCOUNT_ID=<tu-account-id>
+CLOUDFLARE_API_TOKEN=<tu-api-token>
 ```
 
 **Google OAuth**: crear credenciales en [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials → OAuth client ID → Web application. Agregar `http://localhost:8787/api/auth/callback/google` como redirect URI autorizado.
+
+**Cloudflare**: obtener `CLOUDFLARE_ACCOUNT_ID` desde el [dashboard](https://dash.cloudflare.com) (barra lateral derecha) y `CLOUDFLARE_API_TOKEN` desde [API Tokens](https://dash.cloudflare.com/profile/api-tokens) con permisos Workers:Edit + Account:Read. Solo necesario si planeás hacer deploy.
 
 ### 3. Crear base de datos local
 
@@ -112,9 +137,16 @@ apps/
 packages/
 ├── database/     ← 🗄️  Schema + Migraciones (Drizzle)
 ├── api-types/    ← 🔗 Tipos RPC (Hono)
-├── ui/           ← 🎨 Componentes (shadcn/ui)
-├── tailwind-config/ ← 🎨 Tokens + dark mode
-└── typescript-config/ ← ⚙️  TS configs base
+└── ui/           ← 🎨 Componentes (shadcn/ui)
+
+services/
+└── gateway/      ← 🚪 Router unificado (Cloudflare Service Bindings)
+
+tooling/
+├── biome-config/       ← 🧹 Linting + formato (Biome)
+├── tailwind-config/    ← 🎨 Tokens + dark mode (Tailwind CSS v4)
+├── testing/            ← 🧪 Setup de tests (Vitest + Workers pool)
+└── typescript-config/  ← ⚙️  TS configs base
 ```
 
 Cada directorio tiene su propio `README.md` con documentación específica.
@@ -141,6 +173,7 @@ pnpm --filter @repo/api-types build     # Rebuild de tipos RPC
 ## 📚 Siguientes pasos
 
 - Leer `apps/api/README.md` para entender la arquitectura de auth
+- Leer `apps/dashboard/README.md` para el flujo de autenticación
+- Leer `services/gateway/README.md` para entender el ruteo unificado
 - Leer `packages/database/README.md` para el manejo de migraciones
 - Leer `packages/api-types/README.md` para extender tipos RPC
-- Leer `apps/dashboard/README.md` para el flujo de autenticación
