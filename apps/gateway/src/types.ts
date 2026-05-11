@@ -6,10 +6,14 @@ export interface Env {
 	DOCS: Fetcher;
 	ROUTES: string;
 	ASSET_PREFIXES?: string;
+	ENABLE_VIEW_TRANSITIONS?: string;
 }
 
 /** Only the Fetcher keys (service bindings), excluding config vars. */
-export type BindingKey = Exclude<keyof Env, "ROUTES" | "ASSET_PREFIXES">;
+export type BindingKey = Exclude<
+	keyof Env,
+	"ROUTES" | "ASSET_PREFIXES" | "ENABLE_VIEW_TRANSITIONS"
+>;
 
 export interface RouteConfig {
 	binding: BindingKey;

@@ -7,6 +7,8 @@
  *        only buffering the tail of incomplete `url(` tokens.
  */
 
+import type { RouteConfig } from "./types";
+
 const DEFAULT_ASSET_PREFIXES = [
 	"/assets/",
 	"/static/",
@@ -24,7 +26,11 @@ function shouldRewriteUrl(
 	url: string,
 	assetPrefixes: readonly string[],
 ): boolean {
-	if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("//")) {
+	if (
+		url.startsWith("http://") ||
+		url.startsWith("https://") ||
+		url.startsWith("//")
+	) {
 		return false;
 	}
 	for (const prefix of assetPrefixes) {
@@ -93,10 +99,7 @@ export function rewriteHTML(
 			if (!value) continue;
 
 			if (isSrcset) {
-				element.setAttribute(
-					name,
-					rewriteSrcset(value, prefix, assetPrefixes),
-				);
+				element.setAttribute(name, rewriteSrcset(value, prefix, assetPrefixes));
 			} else if (shouldRewriteUrl(value, assetPrefixes)) {
 				element.setAttribute(name, rewriteUrl(value, prefix));
 			}
@@ -245,7 +248,10 @@ export function rewriteCSS(
 	assetPrefixes: readonly string[] = DEFAULT_ASSET_PREFIXES,
 ): Response {
 	const contentType = response.headers.get("Content-Type") ?? "";
-	if (!contentType.includes("text/css") && !contentType.includes("stylesheet")) {
+	if (
+		!contentType.includes("text/css") &&
+		!contentType.includes("stylesheet")
+	) {
 		return response;
 	}
 
@@ -435,10 +441,7 @@ function rewriteSetCookiePath(cookie: string, prefix: string): string {
  *
  * Only processes when prefix !== "/".
  */
-export function rewriteHeaders(
-	response: Response,
-	prefix: string,
-): Response {
+export function rewriteHeaders(response: Response, prefix: string): Response {
 	if (prefix === "/") return response;
 
 	const headers = new Headers(response.headers);
@@ -543,4 +546,116 @@ export function parseAssetPrefixes(envValue?: string): readonly string[] {
 		);
 		return DEFAULT_ASSET_PREFIXES;
 	}
+}
+
+// ---------------------------------------------------------------------------
+// View Transitions & Speculation Rules
+// ---------------------------------------------------------------------------
+
+const VIEW_TRANSITIONS_CSS = `<style id="vmfe-view-transitions">
+@supports (view-transition-name: none) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: both;
+  }
+  main { view-transition-name: main-content; }
+  nav { view-transition-name: navigation; }
+}
+</style>`;
+
+/** Conservative limit for speculation rules URLs per response. */
+const MAX_PREFETCH_URLS = 50;
+
+/**
+ * Collects paths from routes configured for preloading,
+ * excluding the current request path and dynamic parameter routes.
+ * Only static paths and wildcard paths (/:path*) are included.
+ */
+function collectPreloadUrls(
+	routes: RouteConfig[],
+	currentPath: string,
+): string[] {
+	return routes
+		.filter((route) => {
+			if (!route.preload) return false;
+			// Exclude routes with named parameters (/:id, /users/:userId)
+			// but allow wildcard paths (/:path*)
+			if (/:\w+\*?$/.test(route.path)) {
+				// :path* wildcards are OK for speculation
+				if (!route.path.endsWith(":path*")) return false;
+			}
+			return route.path !== currentPath;
+		})
+		.map((route) => route.path)
+		.slice(0, MAX_PREFETCH_URLS);
+}
+
+/**
+ * Injects View Transitions CSS and/or Speculation Rules script into HTML responses.
+ *
+ * - View Transitions: enables smooth cross-document transitions between microfrontends.
+ *   Only injected when `smoothTransitions` is true.
+ *
+ * - Speculation Rules: instructs Chromium-based browsers to prefetch URLs
+ *   for other microfrontends, improving perceived navigation speed.
+ *   Only injected when there are routes with `preload: true`.
+ *
+ * Falls back to injecting at the start of `<body>` if no `<head>` is present.
+ */
+export function injectOptimizations(
+	response: Response,
+	routes: RouteConfig[],
+	currentPath: string,
+	smoothTransitions: boolean,
+): Response {
+	const contentType = response.headers.get("Content-Type") ?? "";
+	if (!contentType.includes("text/html")) return response;
+
+	const preloadUrls = collectPreloadUrls(routes, currentPath);
+	const hasTransitions = smoothTransitions;
+	const hasSpeculation = preloadUrls.length > 0;
+
+	if (!hasTransitions && !hasSpeculation) return response;
+
+	const injectedStyles = hasTransitions ? VIEW_TRANSITIONS_CSS : "";
+	const injectedScript = hasSpeculation
+		? `<script type="speculationrules">${JSON.stringify({ prefetch: [{ source: "list", urls: preloadUrls }] })}</script>`
+		: "";
+
+	const injection = `${injectedStyles}${injectedScript}`;
+	let injected = false;
+
+	const rewriter = new HTMLRewriter()
+		.on("head", {
+			element(el) {
+				el.append(injection, { html: true });
+				injected = true;
+			},
+		})
+		// Fallback: if no <head>, inject at the start of <body>
+		.on("body", {
+			element(el) {
+				if (!injected) {
+					el.prepend(injection, { html: true });
+					injected = true;
+				}
+			},
+		});
+
+	const rewritten = rewriter.transform(response);
+
+	if (!injected) {
+		console.warn(
+			JSON.stringify({
+				level: "warn",
+				message: "Could not inject optimizations: no <head> or <body> found",
+				path: currentPath,
+				timestamp: new Date().toISOString(),
+			}),
+		);
+	}
+
+	return rewritten;
 }

@@ -1,6 +1,11 @@
-import type { Env } from "./types";
+import {
+	injectOptimizations,
+	parseAssetPrefixes,
+	rewriteHeaders,
+	rewriteResponse,
+} from "./rewriter";
 import { matchRoute, parseRoutes, stripPath } from "./router";
-import { rewriteHeaders, rewriteResponse, parseAssetPrefixes } from "./rewriter";
+import type { Env } from "./types";
 
 function withSecurityHeaders(response: Response): Response {
 	const headers = new Headers(response.headers);
@@ -83,6 +88,18 @@ export default {
 			// Rewrite headers (Location, Set-Cookie) for microfrontend mounting
 			if (prefix !== "/") {
 				response = rewriteHeaders(response, prefix);
+			}
+
+			// Inject View Transitions CSS and/or Speculation Rules for other microfrontends
+			// Only applied when there is a route match (not on Landing fallback)
+			if (match) {
+				const enableViewTransitions = env.ENABLE_VIEW_TRANSITIONS !== "false";
+				response = injectOptimizations(
+					response,
+					routes,
+					url.pathname,
+					enableViewTransitions,
+				);
 			}
 
 			const duration = Date.now() - startTime;

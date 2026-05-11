@@ -1,5 +1,7 @@
 # 🔒 `apps/api` — Hono API + Better Auth
 
+(**COMENTARIO DE PRUEBA**)
+
 API REST type-safe con [Hono](https://hono.dev) desplegada en [Cloudflare Workers](https://workers.cloudflare.com). Maneja autenticación (Better Auth), validación (Zod) y expone tipos RPC para consumo tipado desde el frontend.
 
 ## 🏗️ Estructura
@@ -25,14 +27,14 @@ Accesible en `http://localhost:8787`.
 
 ## 📦 Variables de entorno (`.dev.vars`)
 
-| Variable | Descripción |
-|---|---|
-| `DATABASE_URL` | Conexión PostgreSQL (Neon o local) |
-| `BETTER_AUTH_URL` | URL pública de la API (`http://localhost:8787`) |
-| `BETTER_AUTH_SECRET` | Secreto para firmar tokens (min 32 chars) |
-| `DASH_URL` | URL del frontend para CORS y trusted origins |
-| `GOOGLE_CLIENT_ID` | Client ID de Google OAuth |
-| `GOOGLE_CLIENT_SECRET` | Client Secret de Google OAuth |
+| Variable               | Descripción                                     |
+| ---------------------- | ----------------------------------------------- |
+| `DATABASE_URL`         | Conexión PostgreSQL (Neon o local)              |
+| `BETTER_AUTH_URL`      | URL pública de la API (`http://localhost:8787`) |
+| `BETTER_AUTH_SECRET`   | Secreto para firmar tokens (min 32 chars)       |
+| `DASH_URL`             | URL del frontend para CORS y trusted origins    |
+| `GOOGLE_CLIENT_ID`     | Client ID de Google OAuth                       |
+| `GOOGLE_CLIENT_SECRET` | Client Secret de Google OAuth                   |
 
 ## 🔐 Autenticación
 
@@ -66,18 +68,18 @@ export const api = hc<AppType>("/api");
 
 ## 📡 Endpoints
 
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/health` | Health check |
-| `GET` | `/message?name=` | Demo con validación Zod (query params tipados vía RPC) |
-| `*` | `/api/auth/*` | Better Auth (sign-in, callback, session, sign-out) |
+| Método | Ruta             | Descripción                                            |
+| ------ | ---------------- | ------------------------------------------------------ |
+| `GET`  | `/health`        | Health check                                           |
+| `GET`  | `/message?name=` | Demo con validación Zod (query params tipados vía RPC) |
+| `*`    | `/api/auth/*`    | Better Auth (sign-in, callback, session, sign-out)     |
 
 ## 🧠 Decisiones de diseño
 
-| Decisión | Razón |
-|---|---|
-| Auth en API, no en paquete | Sigue el [patrón oficial](https://better-auth.com/docs/integrations/hono); evita abstracción innecesaria |
-| `createAuth()` per-request | Workers I/O isolation — TCP connections no compartibles entre requests |
-| `routes.ts` separado de `index.ts` | Separa tipos RPC (sin bindings) de la configuración del Worker |
-| Dual driver DB | Neon (`neon-http`) en producción, PostgreSQL local (`postgres-js`) en desarrollo |
-| Zod en validaciones | Tipos inferidos automáticamente vía Hono RPC |
+| Decisión                           | Razón                                                                                                    |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Auth en API, no en paquete         | Sigue el [patrón oficial](https://better-auth.com/docs/integrations/hono); evita abstracción innecesaria |
+| `createAuth()` per-request         | Workers I/O isolation — TCP connections no compartibles entre requests                                   |
+| `routes.ts` separado de `index.ts` | Separa tipos RPC (sin bindings) de la configuración del Worker                                           |
+| Dual driver DB                     | Neon (`neon-http`) en producción, PostgreSQL local (`postgres-js`) en desarrollo                         |
+| Zod en validaciones                | Tipos inferidos automáticamente vía Hono RPC                                                             |
