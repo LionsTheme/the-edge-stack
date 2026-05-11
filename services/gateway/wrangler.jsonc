@@ -10,23 +10,23 @@
 	"services": [
 		{
 			"binding": "API",
-			"service": "the-edge-stack-api"
+			"service": "api"
 		},
 		{
-			"binding": "DASHBOARD",
-			"service": "the-edge-stack-dashboard"
+			"binding": "DASH",
+			"service": "dash"
 		},
 		{
 			"binding": "BLOG",
-			"service": "the-edge-stack-blog"
+			"service": "blog"
 		},
 		{
 			"binding": "LANDING",
-			"service": "the-edge-stack-landing"
+			"service": "landing"
 		},
 		{
 			"binding": "DOCS",
-			"service": "the-edge-stack-docs"
+			"service": "docs"
 		}
 	]
 }

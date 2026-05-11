@@ -1,6 +1,6 @@
 export interface Env {
 	API: Fetcher;
-	DASHBOARD: Fetcher;
+	DASH: Fetcher;
 	BLOG: Fetcher;
 	LANDING: Fetcher;
 	DOCS: Fetcher;
@@ -34,8 +34,8 @@ export default {
 
 			if (url.pathname.startsWith("/api/")) {
 				response = await env.API.fetch(req.clone());
-			} else if (url.pathname.startsWith("/app/") || url.pathname === "/app") {
-				response = await env.DASHBOARD.fetch(req.clone());
+			} else if (url.pathname.startsWith("/dash/") || url.pathname === "/dash") {
+				response = await env.DASH.fetch(req.clone());
 			} else if (url.pathname.startsWith("/blog/")) {
 				response = await env.BLOG.fetch(req.clone());
 			} else if (url.pathname.startsWith("/docs/")) {

@@ -23,7 +23,7 @@ pnpm --filter @repo/gateway dev
 | Path | Servicio | Binding |
 |---|---|---|
 | `/api/*` | API (Hono) | `env.API` |
-| `/app/*` | Dashboard (TanStack Start) | `env.DASHBOARD` |
+| `/dash/*` | Dashboard (TanStack Start) | `env.DASH` |
 | `/blog/*` | Blog (Astro) | `env.BLOG` |
 | `/docs/*` | Docs (Starlight) | `env.DOCS` |
 | `/*` | Landing (Astro) | `env.LANDING` (fallback) |
@@ -65,8 +65,8 @@ Los bindings se configuran en `wrangler.jsonc`:
 ```jsonc
 {
   "services": [
-    { "binding": "API", "service": "the-edge-stack-api" },
-    { "binding": "DASHBOARD", "service": "the-edge-stack-dashboard" }
+    { "binding": "API", "service": "api" },
+    { "binding": "DASH", "service": "dash" }
     // ...
   ]
 }
