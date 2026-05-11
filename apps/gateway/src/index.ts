@@ -1,6 +1,6 @@
 import type { Env } from "./types";
 import { matchRoute, parseRoutes, stripPath } from "./router";
-import { rewriteResponse, parseAssetPrefixes } from "./rewriter";
+import { rewriteHeaders, rewriteResponse, parseAssetPrefixes } from "./rewriter";
 
 function withSecurityHeaders(response: Response): Response {
 	const headers = new Headers(response.headers);
@@ -30,9 +30,11 @@ export default {
 			const assetPrefixes = parseAssetPrefixes(env.ASSET_PREFIXES);
 
 			let response: Response;
+			let prefix = "/";
 
 			if (match) {
-				const { route, prefix } = match;
+				const { route, prefix: matchedPrefix } = match;
+				prefix = matchedPrefix;
 
 				// Validate the service binding exists before calling .fetch()
 				const fetcher = env[route.binding];
@@ -76,6 +78,11 @@ export default {
 				}
 			} else {
 				response = await env.LANDING.fetch(req);
+			}
+
+			// Rewrite headers (Location, Set-Cookie) for microfrontend mounting
+			if (prefix !== "/") {
+				response = rewriteHeaders(response, prefix);
 			}
 
 			const duration = Date.now() - startTime;

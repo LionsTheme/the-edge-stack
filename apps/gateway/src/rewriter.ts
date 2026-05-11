@@ -328,6 +328,165 @@ export function rewriteCSS(
 }
 
 // ---------------------------------------------------------------------------
+// HTTP Header rewriting
+// ---------------------------------------------------------------------------
+
+/**
+ * Normalizes a mount prefix to a clean path prefix without trailing slash.
+ * "/docs"  -> "/docs"
+ * "/docs/" -> "/docs"
+ * "/"      -> ""
+ * ""       -> ""
+ */
+function normalizePrefix(prefix: string): string {
+	if (prefix === "/" || prefix === "") return "";
+	return prefix.endsWith("/") ? prefix.slice(0, -1) : prefix;
+}
+
+/**
+ * Checks if a Location header value needs rewriting.
+ * External URLs (http://, https://, //) are left alone.
+ * Everything else — relative paths with or without leading / — gets rewritten.
+ */
+function needsLocationRewrite(location: string): boolean {
+	if (location.startsWith("http://")) return false;
+	if (location.startsWith("https://")) return false;
+	if (location.startsWith("//")) return false;
+	return true;
+}
+
+/**
+ * Rewrites the Location header to include the mount prefix.
+ *
+ * - /instalacion  + prefix /docs → /docs/instalacion
+ * - api/login     + prefix /docs → /docs/api/login
+ * - /docs/guia    + prefix /docs → /docs/guia  (no duplication)
+ * - /docs         + prefix /docs → /docs        (exact match, no duplication)
+ * - https://ext   + prefix /docs → https://ext  (external, untouched)
+ * - /             + prefix /docs → /docs/
+ */
+function rewriteLocationHeader(location: string, prefix: string): string {
+	if (!needsLocationRewrite(location)) return location;
+
+	const cleanPrefix = normalizePrefix(prefix);
+
+	// Ensure the location has a leading /
+	const normalizedLocation = location.startsWith("/")
+		? location
+		: `/${location}`;
+
+	// Root → mount point root
+	if (normalizedLocation === "/") {
+		return cleanPrefix ? `/${cleanPrefix}/` : "/";
+	}
+
+	// Avoid duplicating the prefix
+	if (
+		cleanPrefix &&
+		(normalizedLocation === `/${cleanPrefix}` ||
+			normalizedLocation.startsWith(`/${cleanPrefix}/`))
+	) {
+		return normalizedLocation;
+	}
+
+	if (cleanPrefix) {
+		return `/${cleanPrefix}${normalizedLocation}`;
+	}
+
+	return normalizedLocation;
+}
+
+/**
+ * Rewrites the Path attribute in a Set-Cookie header.
+ *
+ * - No Path attribute     → appends Path=/prefix
+ * - Path=/                → left unchanged (valid for whole domain)
+ * - Path= (empty)         → left unchanged
+ * - Path=/api + /dash     → Path=/dash/api
+ * - HttpOnly, Secure, etc. preserved untouched
+ */
+function rewriteSetCookiePath(cookie: string, prefix: string): string {
+	const cleanPrefix = normalizePrefix(prefix);
+	if (!cleanPrefix) return cookie;
+
+	const pathMatch = cookie.match(/[Pp]ath=([^;]*)/i);
+
+	// No Path attribute at all — append one scoped to the mount point
+	if (!pathMatch) {
+		return `${cookie}; Path=/${cleanPrefix}`;
+	}
+
+	const currentPath = pathMatch[1];
+
+	// Root path or empty path → leave unchanged
+	if (currentPath === "/" || currentPath === "") return cookie;
+
+	// Prepend prefix to specific paths
+	const newPath = `/${cleanPrefix}${currentPath}`;
+	return cookie.replace(pathMatch[0], `Path=${newPath}`);
+}
+
+/**
+ * Rewrites HTTP headers in the response for microfrontend mounting.
+ *
+ * Handles:
+ * - Location: redirects (adds prefix to relative paths)
+ * - Set-Cookie: session cookies (adjusts Path attribute)
+ *
+ * Only processes when prefix !== "/".
+ */
+export function rewriteHeaders(
+	response: Response,
+	prefix: string,
+): Response {
+	if (prefix === "/") return response;
+
+	const headers = new Headers(response.headers);
+	let modified = false;
+
+	// Rewrite Location header for redirects
+	const location = headers.get("Location");
+	if (location) {
+		const rewritten = rewriteLocationHeader(location, prefix);
+		if (rewritten !== location) {
+			headers.set("Location", rewritten);
+			modified = true;
+		}
+	}
+
+	// Rewrite Set-Cookie headers for session cookies
+	// Set-Cookie can appear multiple times, so we get all values
+	const setCookieValues = headers.getAll("Set-Cookie");
+	if (setCookieValues.length > 0) {
+		const rewrittenCookies: string[] = [];
+		let hasChanges = false;
+
+		for (const cookie of setCookieValues) {
+			const rewritten = rewriteSetCookiePath(cookie, prefix);
+			rewrittenCookies.push(rewritten);
+			if (rewritten !== cookie) hasChanges = true;
+		}
+
+		if (hasChanges) {
+			// Delete all existing Set-Cookie headers and add rewritten ones
+			headers.delete("Set-Cookie");
+			for (const cookie of rewrittenCookies) {
+				headers.append("Set-Cookie", cookie);
+			}
+			modified = true;
+		}
+	}
+
+	if (!modified) return response;
+
+	return new Response(response.body, {
+		status: response.status,
+		statusText: response.statusText,
+		headers,
+	});
+}
+
+// ---------------------------------------------------------------------------
 // Orchestrator
 // ---------------------------------------------------------------------------
 
