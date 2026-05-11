@@ -131,12 +131,11 @@ pnpm install
 
 ### 3. Configure Environment Variables
 
-```bash
-# Copy the example file
-cp .env.example .env
+Cada app gestiona sus propias variables. La API es la única que requiere configuración:
 
-# Edit with your values (see detailed guide below)
-nano .env   # or vim, code, etc.
+```bash
+cp apps/api/.env.example apps/api/.env
+nano apps/api/.env
 ```
 
 **Required variables:**
@@ -146,7 +145,7 @@ nano .env   # or vim, code, etc.
 | `DATABASE_URL` | [Neon Dashboard](https://console.neon.tech) or local PostgreSQL | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Neon-PostgreSQL) |
 | `BETTER_AUTH_SECRET` | Generate with `openssl rand -base64 32` | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Better-Auth) |
 | `BETTER_AUTH_URL` | Your API URL (e.g. `http://localhost:8787`) | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) |
-| `DASHBOARD_URL` | Your frontend URL (e.g. `http://localhost:3000`) | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) |
+| `DASH_URL` | Your frontend URL (e.g. `http://localhost:3000`) | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) |
 | `GOOGLE_CLIENT_ID` | [Google Cloud Console](https://console.cloud.google.com) | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) |
 | `GOOGLE_CLIENT_SECRET` | [Google Cloud Console](https://console.cloud.google.com) | [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki/Variables-de-Entorno) |
 

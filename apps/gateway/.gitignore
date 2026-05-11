@@ -1,0 +1,16 @@
+# build output
+dist/
+
+# dependencies
+node_modules/
+
+# environment variables
+.env
+.env.production
+
+# wrangler files
+.wrangler
+.dev.vars*
+
+# logs
+*.log

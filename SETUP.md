@@ -40,11 +40,13 @@ pnpm install
 
 ### 2. Configurar variables de entorno
 
+Cada app gestiona sus propias variables. La API es la única que requiere configuración:
+
 ```bash
-cp .env.example .env
+cp apps/api/.env.example apps/api/.env
 ```
 
-Editar `.env` con tus valores:
+Editar `apps/api/.env` con tus valores:
 
 ```env
 # Base de datos
@@ -80,14 +82,7 @@ sudo -u postgres psql -c "CREATE DATABASE edgestack_dev;"
 # Crear proyecto en https://neon.tech y copiar la DATABASE_URL
 ```
 
-### 4. Configurar `.dev.vars` para el API
-
-```bash
-cp apps/api/.dev.vars.example apps/api/.dev.vars  # si existe example
-# O crear manualmente con las mismas variables que .env
-```
-
-### 5. Ejecutar migraciones
+### 4. Ejecutar migraciones
 
 ```bash
 pnpm --filter @repo/database db:generate
@@ -96,7 +91,7 @@ pnpm --filter @repo/database db:migrate
 
 Esto crea las tablas: `posts`, `user`, `session`, `account`, `verification`.
 
-### 6. Arrancar los servicios
+### 5. Arrancar los servicios
 
 ```bash
 # Terminal 1 — API
@@ -108,7 +103,7 @@ pnpm --filter @repo/dash dev
 # → http://localhost:3000
 ```
 
-### 7. Probar autenticación
+### 6. Probar autenticación
 
 1. Abrir `http://localhost:3000`
 2. Click en **Sign In**
@@ -116,7 +111,7 @@ pnpm --filter @repo/dash dev
 4. Autorizar en la ventana de Google
 5. Redirigido al Dash autenticado
 
-### 8. Arrancar otras apps (opcional)
+### 7. Arrancar otras apps (opcional)
 
 ```bash
 pnpm --filter @repo/landing dev     # → http://localhost:4321
@@ -163,7 +158,7 @@ pnpm --filter @repo/api-types build     # Rebuild de tipos RPC
 | Problema | Solución |
 |---|---|
 | `Cannot perform I/O on behalf of a different request` | El cliente DB se crea por request en Workers. Asegurate de no cachearlo globalmente |
-| `Invalid origin` en auth | Verificar `DASH_URL` en `.dev.vars` |
+| `Invalid origin` en auth | Verificar `DASH_URL` en `apps/api/.env` |
 | `relation "verification" does not exist` | Ejecutar `pnpm --filter @repo/database db:migrate` |
 | Sesión no persiste después de login | Revisar cookies SameSite, CORS credentials, y `callbackURL` |
 | Error de tipos RPC | Rebuild `pnpm --filter @repo/api-types build` |
