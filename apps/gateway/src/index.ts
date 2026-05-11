@@ -1,5 +1,6 @@
 import type { Env } from "./types";
 import { matchRoute, parseRoutes, stripPath } from "./router";
+import { rewriteResponse, parseAssetPrefixes } from "./rewriter";
 
 function withSecurityHeaders(response: Response): Response {
 	const headers = new Headers(response.headers);
@@ -26,15 +27,54 @@ export default {
 		try {
 			const routes = parseRoutes(env);
 			const match = matchRoute(url.pathname, routes);
+			const assetPrefixes = parseAssetPrefixes(env.ASSET_PREFIXES);
 
 			let response: Response;
 
 			if (match) {
 				const { route, prefix } = match;
+
+				// Validate the service binding exists before calling .fetch()
+				const fetcher = env[route.binding];
+				if (!fetcher || typeof fetcher.fetch !== "function") {
+					console.error(
+						JSON.stringify({
+							level: "error",
+							message: `Service binding not found: ${route.binding}`,
+							path: url.pathname,
+							timestamp: new Date().toISOString(),
+						}),
+					);
+					return new Response(
+						JSON.stringify({ error: "Service unavailable" }),
+						{
+							status: 503,
+							headers: {
+								"Content-Type": "application/json",
+								"X-Content-Type-Options": "nosniff",
+							},
+						},
+					);
+				}
+
 				const stripped = stripPath(req, prefix);
-				response = await env[route.binding].fetch(stripped);
+				response = await fetcher.fetch(stripped);
+
+				// Rewrite asset paths if the response is successful
+				if (response.ok) {
+					response = rewriteResponse(response, prefix, assetPrefixes);
+				} else {
+					console.log(
+						JSON.stringify({
+							level: "warn",
+							message: `Upstream returned ${response.status}`,
+							binding: route.binding,
+							path: url.pathname,
+							timestamp: new Date().toISOString(),
+						}),
+					);
+				}
 			} else {
-				// Fallback to Landing
 				response = await env.LANDING.fetch(req);
 			}
 

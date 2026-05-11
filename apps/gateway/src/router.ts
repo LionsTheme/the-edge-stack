@@ -19,8 +19,15 @@ export function parseRoutes(env: Env): RouteConfig[] {
 			(r) => BINDING_KEYS.has(r.binding) && r.path.length > 0,
 		);
 		return routes.sort(compareRoutes);
-	} catch {
-		console.error("Failed to parse ROUTES env var");
+	} catch (err) {
+		console.error(
+			JSON.stringify({
+				level: "error",
+				message: "Failed to parse ROUTES env var",
+				error: err instanceof Error ? err.message : String(err),
+				timestamp: new Date().toISOString(),
+			}),
+		);
 		return [];
 	}
 }
