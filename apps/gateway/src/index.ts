@@ -1,12 +1,6 @@
-export interface Env {
-	API: Fetcher;
-	DASH: Fetcher;
-	BLOG: Fetcher;
-	LANDING: Fetcher;
-	DOCS: Fetcher;
-}
+import type { Env } from "./types";
+import { matchRoute, parseRoutes, stripPath } from "./router";
 
-// Security headers applied to all responses
 function withSecurityHeaders(response: Response): Response {
 	const headers = new Headers(response.headers);
 	headers.set("X-Content-Type-Options", "nosniff");
@@ -30,22 +24,20 @@ export default {
 		const startTime = Date.now();
 
 		try {
+			const routes = parseRoutes(env);
+			const match = matchRoute(url.pathname, routes);
+
 			let response: Response;
 
-			if (url.pathname.startsWith("/api/")) {
-				response = await env.API.fetch(req.clone());
-			} else if (url.pathname.startsWith("/dash/") || url.pathname === "/dash") {
-				response = await env.DASH.fetch(req.clone());
-			} else if (url.pathname.startsWith("/blog/")) {
-				response = await env.BLOG.fetch(req.clone());
-			} else if (url.pathname.startsWith("/docs/")) {
-				response = await env.DOCS.fetch(req.clone());
+			if (match) {
+				const { route, prefix } = match;
+				const stripped = stripPath(req, prefix);
+				response = await env[route.binding].fetch(stripped);
 			} else {
-				// Fallback: Landing page
-				response = await env.LANDING.fetch(req.clone());
+				// Fallback to Landing
+				response = await env.LANDING.fetch(req);
 			}
 
-			// Log structured request info
 			const duration = Date.now() - startTime;
 			console.log(
 				JSON.stringify({

@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "the-edge-stack-gateway",
+	"name": "gateway",
 	"compatibility_date": "2026-05-05",
 	"main": "src/index.ts",
 	"compatibility_flags": ["nodejs_compat"],
@@ -28,5 +28,9 @@
 			"binding": "DOCS",
 			"service": "docs"
 		}
-	]
+	],
+	"vars": {
+		"ROUTES": "{\"routes\":[{\"binding\":\"API\",\"path\":\"/api\"},{\"binding\":\"DASH\",\"path\":\"/dash\"},{\"binding\":\"BLOG\",\"path\":\"/blog\"},{\"binding\":\"DOCS\",\"path\":\"/docs\"},{\"binding\":\"LANDING\",\"path\":\"/\"}]}",
+		"ASSET_PREFIXES": "[\"/assets/\",\"/static/\",\"/build/\",\"/_astro/\",\"/_vite/\",\"/fonts/\"]"
+	}
 }
