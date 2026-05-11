@@ -18,14 +18,6 @@
 	"compatibility_flags": ["nodejs_compat"],
 	"alias": {
 		"@repo/database": "../../packages/database/src/index.ts"
-	},
-	"vars": {
-		"DATABASE_URL": "",
-		"BETTER_AUTH_SECRET": "",
-		"BETTER_AUTH_URL": "",
-		"GOOGLE_CLIENT_ID": "",
-		"GOOGLE_CLIENT_SECRET": "",
-		"DASH_URL": ""
 	}
 	/**
 	 * Smart Placement

@@ -4,18 +4,6 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import routes from "./routes";
 
-// Extracted to avoid duplicating 6 env var accesses across middleware handlers.
-function authEnv(c: { env: CloudflareBindings }) {
-	return {
-		DATABASE_URL: c.env.DATABASE_URL,
-		BETTER_AUTH_SECRET: c.env.BETTER_AUTH_SECRET,
-		BETTER_AUTH_URL: c.env.BETTER_AUTH_URL,
-		DASH_URL: c.env.DASH_URL,
-		GOOGLE_CLIENT_ID: c.env.GOOGLE_CLIENT_ID,
-		GOOGLE_CLIENT_SECRET: c.env.GOOGLE_CLIENT_SECRET,
-	};
-}
-
 const app = new Hono<{
 	Bindings: CloudflareBindings;
 	Variables: {
@@ -29,7 +17,9 @@ app.use(
 	cors({
 		origin: (origin, c) => {
 			const dashUrl = c.env?.DASH_URL;
-			const allowedOrigins = dashUrl ? [dashUrl, "http://localhost:3000"] : ["http://localhost:3000"];
+			const allowedOrigins = dashUrl
+				? [dashUrl, "http://localhost:3000"]
+				: ["http://localhost:3000"];
 			return allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
 		},
 		allowHeaders: ["Content-Type", "Authorization"],
@@ -43,11 +33,11 @@ app.use(
 // Per-request auth creation required for Workers I/O isolation.
 // https://opennext.js.org/cloudflare/troubleshooting#error-cannot-perform-io-on-behalf-of-a-different-request
 app.on(["POST", "GET"], "/api/auth/*", (c) => {
-	return createAuth(authEnv(c)).handler(c.req.raw);
+	return createAuth().handler(c.req.raw);
 });
 
 app.use("*", async (c, next) => {
-	const auth = createAuth(authEnv(c));
+	const auth = createAuth();
 
 	const session = await auth.api.getSession({
 		headers: c.req.raw.headers,

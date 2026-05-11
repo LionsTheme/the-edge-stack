@@ -32,3 +32,4 @@ coverage
 .wrangler
 wrangler.toml
 !.example.wrangler.toml
+.dev.vars

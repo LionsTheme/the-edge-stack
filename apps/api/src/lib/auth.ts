@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { getDb } from "@repo/database";
+import { env } from "cloudflare:workers";
 
 /**
  * Creates a new Better Auth instance configured for the current environment.
@@ -9,15 +10,11 @@ import { getDb } from "@repo/database";
  * TCP connections from postgres-js cannot be shared across requests.
  * @see https://opennext.js.org/cloudflare/troubleshooting#error-cannot-perform-io-on-behalf-of-a-different-request
  * @see https://better-auth.com/docs/integrations/hono
+ *
+ * Uses `env` from cloudflare:workers for global access to environment variables
+ * without passing them through every function call.
  */
-export function createAuth(env: {
-	DATABASE_URL: string;
-	BETTER_AUTH_SECRET: string;
-	BETTER_AUTH_URL: string;
-	DASH_URL: string;
-	GOOGLE_CLIENT_ID: string;
-	GOOGLE_CLIENT_SECRET: string;
-}) {
+export function createAuth() {
 	const db = getDb(env.DATABASE_URL);
 	return betterAuth({
 		database: drizzleAdapter(db, { provider: "pg" }),
