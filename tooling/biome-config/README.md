@@ -70,7 +70,7 @@ Extiende la base. Para apps con React/JSX: `apps/dash`.
 
 ### `@repo/biome-config/cloudflare`
 
-Extiende la base con reglas más permisivas. `noUnusedVariables` y `noUnusedImports` bajan a `warn` porque Workers usa imports con efectos secundarios (`import "hono/cors"`). Usado por `apps/api` y `services/gateway`.
+Extiende la base con reglas más permisivas. `noUnusedVariables` y `noUnusedImports` bajan a `warn` porque Workers usa imports con efectos secundarios (`import "hono/cors"`). Usado por `apps/api` y `apps/gateway`.
 
 ```jsonc
 // biome.json

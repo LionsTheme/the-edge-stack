@@ -1,4 +1,4 @@
-# 🚪 `services/gateway` — Cloudflare Gateway Worker
+# 🚪 `apps/gateway` — Cloudflare Gateway Worker
 
 Router unificado que dirige el tráfico a los servicios correctos usando [Cloudflare Service Bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/). Es el punto de entrada único para todas las apps del monorepo.
 

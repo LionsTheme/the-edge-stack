@@ -132,15 +132,13 @@ apps/
 ├── dash/         ← 🖥️  Admin SSR (TanStack Start)
 ├── landing/      ← 📄 Marketing (Astro)
 ├── blog/         ← ✍️  Contenido (Astro MDX)
-└── docs/         ← 📚 Documentación (Starlight)
+├── docs/         ← 📚 Documentación (Starlight)
+└── gateway/      ← 🚪 Router unificado (Cloudflare Service Bindings)
 
 packages/
 ├── database/     ← 🗄️  Schema + Migraciones (Drizzle)
 ├── api-types/    ← 🔗 Tipos RPC (Hono)
 └── ui/           ← 🎨 Componentes (shadcn/ui)
-
-services/
-└── gateway/      ← 🚪 Router unificado (Cloudflare Service Bindings)
 
 tooling/
 ├── biome-config/       ← 🧹 Linting + formato (Biome)
@@ -174,6 +172,6 @@ pnpm --filter @repo/api-types build     # Rebuild de tipos RPC
 
 - Leer `apps/api/README.md` para entender la arquitectura de auth
 - Leer `apps/dash/README.md` para el flujo de autenticación
-- Leer `services/gateway/README.md` para entender el ruteo unificado
+- Leer `apps/gateway/README.md` para entender el ruteo unificado
 - Leer `packages/database/README.md` para el manejo de migraciones
 - Leer `packages/api-types/README.md` para extender tipos RPC
