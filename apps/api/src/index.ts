@@ -24,14 +24,14 @@ const app = new Hono<{
 	};
 }>();
 
-// CORS origin list — update with your frontend URL(s) for production.
-const allowedOrigins = ["http://localhost:3000"];
-
 app.use(
 	"/api/auth/*",
 	cors({
-		origin: (origin) =>
-			allowedOrigins.includes(origin) ? origin : allowedOrigins[0],
+		origin: (origin, c) => {
+			const dashUrl = c.env?.DASH_URL;
+			const allowedOrigins = dashUrl ? [dashUrl, "http://localhost:3000"] : ["http://localhost:3000"];
+			return allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+		},
 		allowHeaders: ["Content-Type", "Authorization"],
 		allowMethods: ["POST", "GET", "OPTIONS"],
 		exposeHeaders: ["Content-Length"],
