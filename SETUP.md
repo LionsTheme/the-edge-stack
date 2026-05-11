@@ -55,7 +55,7 @@ BETTER_AUTH_URL=http://localhost:8787
 BETTER_AUTH_SECRET=<generar con: openssl rand -base64 32>
 
 # Frontend
-DASHBOARD_URL=http://localhost:3000
+DASH_URL=http://localhost:3000
 
 # Google OAuth
 GOOGLE_CLIENT_ID=<tu-client-id>.apps.googleusercontent.com
@@ -103,8 +103,8 @@ Esto crea las tablas: `posts`, `user`, `session`, `account`, `verification`.
 pnpm --filter @repo/api dev
 # → http://localhost:8787
 
-# Terminal 2 — Dashboard
-pnpm --filter @repo/dashboard dev
+# Terminal 2 — Dash
+pnpm --filter @repo/dash dev
 # → http://localhost:3000
 ```
 
@@ -114,7 +114,7 @@ pnpm --filter @repo/dashboard dev
 2. Click en **Sign In**
 3. Click en **Continue with Google**
 4. Autorizar en la ventana de Google
-5. Redirigido al Dashboard autenticado
+5. Redirigido al Dash autenticado
 
 ### 8. Arrancar otras apps (opcional)
 
@@ -129,7 +129,7 @@ pnpm --filter @repo/docs dev        # → http://localhost:4323
 ```
 apps/
 ├── api/          ← 🔒 Auth + API REST (Hono + Workers)
-├── dashboard/    ← 🖥️  Admin SSR (TanStack Start)
+├── dash/         ← 🖥️  Admin SSR (TanStack Start)
 ├── landing/      ← 📄 Marketing (Astro)
 ├── blog/         ← ✍️  Contenido (Astro MDX)
 └── docs/         ← 📚 Documentación (Starlight)
@@ -165,7 +165,7 @@ pnpm --filter @repo/api-types build     # Rebuild de tipos RPC
 | Problema | Solución |
 |---|---|
 | `Cannot perform I/O on behalf of a different request` | El cliente DB se crea por request en Workers. Asegurate de no cachearlo globalmente |
-| `Invalid origin` en auth | Verificar `DASHBOARD_URL` en `.dev.vars` |
+| `Invalid origin` en auth | Verificar `DASH_URL` en `.dev.vars` |
 | `relation "verification" does not exist` | Ejecutar `pnpm --filter @repo/database db:migrate` |
 | Sesión no persiste después de login | Revisar cookies SameSite, CORS credentials, y `callbackURL` |
 | Error de tipos RPC | Rebuild `pnpm --filter @repo/api-types build` |
@@ -173,7 +173,7 @@ pnpm --filter @repo/api-types build     # Rebuild de tipos RPC
 ## 📚 Siguientes pasos
 
 - Leer `apps/api/README.md` para entender la arquitectura de auth
-- Leer `apps/dashboard/README.md` para el flujo de autenticación
+- Leer `apps/dash/README.md` para el flujo de autenticación
 - Leer `services/gateway/README.md` para entender el ruteo unificado
 - Leer `packages/database/README.md` para el manejo de migraciones
 - Leer `packages/api-types/README.md` para extender tipos RPC

@@ -29,7 +29,7 @@ const res = await api.message.$get({ query: { name: "Hono" } });
 ## 🔄 Cómo funciona
 
 ```
-apps/api/src/routes.ts ──export type AppType──► @repo/api-types ──► apps/dashboard
+apps/api/src/routes.ts ──export type AppType──► @repo/api-types ──► apps/dash
                                                         │
                                                  hc<AppType>("/api")
 ```

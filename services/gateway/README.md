@@ -7,7 +7,7 @@ Router unificado que dirige el tráfico a los servicios correctos usando [Cloudf
 ```
 src/
 └── index.ts    # Router + security headers + structured logging
-wrangler.jsonc  # Service bindings a API, Dashboard, Blog, Landing, Docs
+wrangler.jsonc  # Service bindings a API, Dash, Blog, Landing, Docs
 ```
 
 ## 🚀 Arranque
@@ -23,7 +23,7 @@ pnpm --filter @repo/gateway dev
 | Path | Servicio | Binding |
 |---|---|---|
 | `/api/*` | API (Hono) | `env.API` |
-| `/dash/*` | Dashboard (TanStack Start) | `env.DASH` |
+| `/dash/*` | Dash (TanStack Start) | `env.DASH` |
 | `/blog/*` | Blog (Astro) | `env.BLOG` |
 | `/docs/*` | Docs (Starlight) | `env.DOCS` |
 | `/*` | Landing (Astro) | `env.LANDING` (fallback) |

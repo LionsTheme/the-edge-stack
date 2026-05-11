@@ -61,7 +61,7 @@ Para paquetes sin JSX ni Workers. Usado por `packages/database`, `packages/api-t
 
 ### `@repo/biome-config/react`
 
-Extiende la base. Para apps con React/JSX: `apps/dashboard`.
+Extiende la base. Para apps con React/JSX: `apps/dash`.
 
 ```jsonc
 // biome.json

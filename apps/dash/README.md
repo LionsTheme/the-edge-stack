@@ -1,6 +1,6 @@
-# 🖥️ `apps/dashboard` — TanStack Start
+# 🖥️ `apps/dash` — TanStack Start
 
-Dashboard SSR con [TanStack Start](https://tanstack.com/start) + [React 19](https://react.dev). Autenticación con Google OAuth, rutas protegidas y consumo tipado del API vía Hono RPC.
+Dash SSR con [TanStack Start](https://tanstack.com/start) + [React 19](https://react.dev). Autenticación con Google OAuth, rutas protegidas y consumo tipado del API vía Hono RPC.
 
 ## 🏗️ Estructura
 
@@ -12,7 +12,7 @@ src/
 │   ├── sign-in.tsx             # Sign-in con Google OAuth
 │   ├── _protected.tsx          # Layout protegido — beforeLoad verifica sesión
 │   └── _protected/
-│       └── dashboard.tsx       # Dashboard — muestra usuario, botón sign-out
+│       └── dashboard.tsx       # Dash — muestra usuario, botón sign-out
 ├── lib/
 │   ├── api.ts                  # Cliente Hono RPC (hc<AppType>)
 │   ├── auth-client.ts          # Cliente Better Auth React
@@ -26,7 +26,7 @@ vite.config.ts                  # Vite + Cloudflare plugin + TanStack Start
 ## 🚀 Arranque
 
 ```bash
-pnpm --filter @repo/dashboard dev
+pnpm --filter @repo/dash dev
 ```
 
 Accesible en `http://localhost:3000`.
@@ -36,7 +36,7 @@ Accesible en `http://localhost:3000`.
 ```
 Usuario → /sign-in → Google OAuth → API callback → cookie de sesión
                                                          ↓
-                                               redirect a /dashboard
+                                               redirect a /dash
                                                          ↓
                                         _protected.tsx verifica sesión (SSR)
 ```

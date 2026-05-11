@@ -30,7 +30,7 @@ Accesible en `http://localhost:8787`.
 | `DATABASE_URL` | Conexión PostgreSQL (Neon o local) |
 | `BETTER_AUTH_URL` | URL pública de la API (`http://localhost:8787`) |
 | `BETTER_AUTH_SECRET` | Secreto para firmar tokens (min 32 chars) |
-| `DASHBOARD_URL` | URL del frontend para CORS y trusted origins |
+| `DASH_URL` | URL del frontend para CORS y trusted origins |
 | `GOOGLE_CLIENT_ID` | Client ID de Google OAuth |
 | `GOOGLE_CLIENT_SECRET` | Client Secret de Google OAuth |
 
@@ -55,10 +55,10 @@ pnpm dlx @better-auth/cli@latest generate \
 
 ## 🔗 Hono RPC
 
-`routes.ts` exporta `AppType` (sin Cloudflare bindings) para que `@repo/api-types` lo re-exporte. El Dashboard consume los tipos vía `hc<AppType>`:
+`routes.ts` exporta `AppType` (sin Cloudflare bindings) para que `@repo/api-types` lo re-exporte. El Dash consume los tipos vía `hc<AppType>`:
 
 ```ts
-// Dashboard: lib/api.ts
+// Dash: lib/api.ts
 import { hc } from "hono/client";
 import type { AppType } from "@repo/api-types";
 export const api = hc<AppType>("/api");
