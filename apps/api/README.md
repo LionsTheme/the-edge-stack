@@ -1,7 +1,5 @@
 # 🔒 `apps/api` — Hono API + Better Auth
 
-(**COMENTARIO DE PRUEBA**)
-
 API REST type-safe con [Hono](https://hono.dev) desplegada en [Cloudflare Workers](https://workers.cloudflare.com). Maneja autenticación (Better Auth), validación (Zod) y expone tipos RPC para consumo tipado desde el frontend.
 
 ## 🏗️ Estructura
