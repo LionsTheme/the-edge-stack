@@ -1,16 +1,16 @@
-# 🎨 `@repo/ui` — Componentes Compartidos
+# 🎨 `@repo/ui` — Shared Components
 
-Librería de componentes UI construida con [shadcn/ui](https://ui.shadcn.com) v4 + [Tailwind CSS](https://tailwindcss.com) v4. Basada en [Base UI](https://base-ui.com/react) para accesibilidad.
+UI component library built with [shadcn/ui](https://ui.shadcn.com) v4 + [Tailwind CSS](https://tailwindcss.com) v4. Based on [Base UI](https://base-ui.com/react) for accessibility.
 
-## 🏗️ Estructura
+## 🏗️ Structure
 
 ```
 src/
 └── components/
-    └── button.tsx    # Ejemplo: componente Button con variantes
+    └── button.tsx    # Example: Button component with variants
 ```
 
-## 🚀 Uso
+## 🚀 Usage
 
 ```tsx
 import { Button } from "@repo/ui/components/button";
@@ -18,18 +18,18 @@ import { Button } from "@repo/ui/components/button";
 <Button variant="outline">Click me</Button>
 ```
 
-## ➕ Agregar componentes
+## ➕ Adding Components
 
 ```bash
-# Desde la raíz del monorepo
+# From the monorepo root
 cd packages/ui
 pnpm dlx shadcn@latest add card
 pnpm dlx shadcn@latest add dialog
 pnpm dlx shadcn@latest add input
 ```
 
-Los componentes se agregan en `src/components/` y están disponibles para todas las apps.
+Components are added in `src/components/` and are available to all apps.
 
-## 🎨 Tokens de diseño
+## 🎨 Design Tokens
 
-Los tokens CSS (colores, tipografía, radius) están definidos en `@repo/tailwind-config` y se comparten entre todas las apps vía `@import` en los archivos CSS.
+CSS tokens (colors, typography, radius) are defined in `@repo/tailwind-config` and are shared across all apps via `@import` in CSS files.

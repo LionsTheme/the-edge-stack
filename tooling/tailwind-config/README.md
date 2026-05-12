@@ -1,10 +1,10 @@
 # 🎨 `@repo/tailwind-config`
 
-Configuración centralizada de [Tailwind CSS v4](https://tailwindcss.com) con tokens de diseño compartidos entre todas las apps.
+Centralized [Tailwind CSS v4](https://tailwindcss.com) configuration with shared design tokens across all apps.
 
-## Uso
+## Usage
 
-Cada app importa esta configuración en su `app.css`:
+Each app imports this configuration in its `app.css`:
 
 ```css
 @import "@repo/tailwind-config";
@@ -12,4 +12,4 @@ Cada app importa esta configuración en su `app.css`:
 
 ## Tokens
 
-Los tokens CSS (colores, tipografía, spacing, radius) se definen aquí y se heredan en todas las apps. Esto asegura consistencia visual en todo el monorepo.
+CSS tokens (colors, typography, spacing, radius) are defined here and inherited by all apps. This ensures visual consistency across the entire monorepo.

@@ -1,66 +1,66 @@
 # 🗄️ `@repo/database` — Drizzle ORM + PostgreSQL
 
-Schema de base de datos, migraciones y cliente unificado con soporte dual: [Neon](https://neon.tech) (serverless) y PostgreSQL local.
+Database schema, migrations, and unified client with dual support: [Neon](https://neon.tech) (serverless) and local PostgreSQL.
 
-## 🏗️ Estructura
+## 🏗️ Structure
 
 ```
 src/
-├── index.ts          # getDb() — factory con detección Neon vs local
-├── schema.ts         # Schema principal + re-export de auth-schema
-├── auth-schema.ts    # Tablas de Better Auth (user, session, account, verification)
-└── seed.ts           # Datos iniciales
+├── index.ts          # getDb() — factory with Neon vs local detection
+├── schema.ts         # Main schema + re-export from auth-schema
+├── auth-schema.ts    # Better Auth tables (user, session, account, verification)
+└── seed.ts           # Initial data
 drizzle/
-├── 0000_awesome_blade.sql    # Migración inicial (posts)
-├── 0001_thick_omega_sentinel.sql  # Tablas de auth
-└── meta/                     # Journal de migraciones
-drizzle.config.ts    # Configuración de drizzle-kit
+├── 0000_awesome_blade.sql    # Initial migration (posts)
+├── 0001_thick_omega_sentinel.sql  # Auth tables
+└── meta/                     # Migration journal
+drizzle.config.ts    # drizzle-kit configuration
 ```
 
-## 🚀 Comandos
+## 🚀 Commands
 
 ```bash
-pnpm --filter @repo/database db:generate   # Generar migraciones
-pnpm --filter @repo/database db:migrate    # Aplicar migraciones
-pnpm --filter @repo/database db:push       # Push directo (desarrollo)
-pnpm --filter @repo/database db:studio     # Abrir Drizzle Studio (GUI)
-pnpm --filter @repo/database db:seed       # Ejecutar seeds
+pnpm --filter @repo/database db:generate   # Generate migrations
+pnpm --filter @repo/database db:migrate    # Apply migrations
+pnpm --filter @repo/database db:push       # Direct push (development)
+pnpm --filter @repo/database db:studio     # Open Drizzle Studio (GUI)
+pnpm --filter @repo/database db:seed       # Run seeds
 ```
 
-## 🔌 Dual driver
+## 🔌 Dual Driver
 
-`getDb()` detecta automáticamente si usar Neon o PostgreSQL local:
+`getDb()` automatically detects whether to use Neon or local PostgreSQL:
 
 ```ts
 import { getDb } from "@repo/database";
 
 const db = getDb(process.env.DATABASE_URL);
-// Si la URL contiene "neon.tech" → usa @neondatabase/serverless (HTTP/WebSocket)
-// Si no → usa postgres-js (TCP, solo Node.js/dev)
+// If the URL contains "neon.tech" → uses @neondatabase/serverless (HTTP/WebSocket)
+// If not → uses postgres-js (TCP, Node.js/dev only)
 ```
 
-| Entorno | Driver | Transporte |
+| Environment | Driver | Transport |
 |---|---|---|
-| Neon (producción) | `drizzle-orm/neon-http` | HTTP/WebSocket |
-| PostgreSQL local | `drizzle-orm/postgres-js` | TCP directo |
+| Neon (production) | `drizzle-orm/neon-http` | HTTP/WebSocket |
+| Local PostgreSQL | `drizzle-orm/postgres-js` | Direct TCP |
 
-### ¿Por qué no `postgres-js` en Workers?
+### Why not `postgres-js` in Workers?
 
-Cloudflare Workers aísla el I/O entre requests — las conexiones TCP no pueden compartirse. En producción se usa Neon (HTTP). En desarrollo local, wrangler ejecuta Node.js donde `postgres-js` funciona.
+Cloudflare Workers isolate I/O between requests — TCP connections cannot be shared. In production, Neon (HTTP) is used. In local development, wrangler runs Node.js where `postgres-js` works.
 
-## 📋 Tablas
+## 📋 Tables
 
-| Tabla | Origen | Descripción |
+| Table | Origin | Description |
 |---|---|---|
-| `posts` | Schema propio | Posts de ejemplo |
-| `user` | Better Auth CLI | Usuarios |
-| `session` | Better Auth CLI | Sesiones activas |
-| `account` | Better Auth CLI | Cuentas OAuth vinculadas |
-| `verification` | Better Auth CLI | Tokens de verificación/estado |
+| `posts` | Own schema | Example posts |
+| `user` | Better Auth CLI | Users |
+| `session` | Better Auth CLI | Active sessions |
+| `account` | Better Auth CLI | Linked OAuth accounts |
+| `verification` | Better Auth CLI | Verification tokens/status |
 
-## 🔄 Regenerar schema de auth
+## 🔄 Regenerate Auth Schema
 
-Cuando agregues plugins o campos a Better Auth:
+When adding plugins or fields to Better Auth:
 
 ```bash
 cd apps/api

@@ -1,97 +1,97 @@
-# ⚡ The Edge Stack — Guía de Primera Ejecución
+# ⚡ The Edge Stack — Quick Start Guide
 
-Esta guía te lleva de cero a tener el boilerplate corriendo localmente con autenticación funcional.
+This guide takes you from zero to having the boilerplate running locally with working authentication.
 
-## 📋 Prerrequisitos
+## 📋 Prerequisites
 
 - **Node.js >=22.12.0** — `node --version`
-- **pnpm >=10** — habilitar con `corepack enable` (viene incluido en Node.js)
-- **PostgreSQL** — local o [Neon](https://neon.tech) (free tier)
-- **Cuenta de Google Cloud** — para OAuth (Google Console)
+- **pnpm >=10** — enable with `corepack enable` (included in Node.js)
+- **PostgreSQL** — local or [Neon](https://neon.tech) (free tier)
+- **Google Cloud account** — for OAuth (Google Console)
 
-## 🚀 Paso a paso
+## 🚀 Step by Step
 
-### 1. Crear el proyecto
+### 1. Create the project
 
-**Opción A — Usar el template de GitHub (recomendado):**
+**Option A — Use the GitHub template (recommended):**
 
-1. Ir a https://github.com/LionsTheme/the-edge-stack
-2. Click en **"Use this template"** → **"Create a new repository"**
-3. Elegir owner, nombre y visibilidad
-4. Clonar tu nuevo repositorio:
+1. Go to https://github.com/LionsTheme/the-edge-stack
+2. Click **"Use this template"** → **"Create a new repository"**
+3. Choose owner, name, and visibility
+4. Clone your new repository:
 
 ```bash
-git clone https://github.com/<tu-usuario>/<tu-repo>.git
-cd <tu-repo>
+git clone https://github.com/<your-user>/<your-repo>.git
+cd <your-repo>
 ```
 
-**Opción B — Clonar directamente:**
+**Option B — Clone directly:**
 
 ```bash
 git clone https://github.com/LionsTheme/the-edge-stack.git
 cd the-edge-stack
 ```
 
-Luego instalar dependencias:
+Then install dependencies:
 
 ```bash
 pnpm install
 ```
 
-### 2. Configurar variables de entorno
+### 2. Configure environment variables
 
-Cada app gestiona sus propias variables. La API es la única que requiere configuración:
+Each app manages its own environment variables. The API is the only one that requires configuration:
 
 ```bash
 cp apps/api/.env.example apps/api/.env
 ```
 
-Editar `apps/api/.env` con tus valores:
+Edit `apps/api/.env` with your values:
 
 ```env
-# Base de datos
+# Database
 DATABASE_URL=postgresql://user:password@localhost:5432/edgestack_dev
 
 # Auth (Better Auth)
 BETTER_AUTH_URL=http://localhost:8787
-BETTER_AUTH_SECRET=<generar con: openssl rand -base64 32>
+BETTER_AUTH_SECRET=<generate with: openssl rand -base64 32>
 
 # Frontend
 DASH_URL=http://localhost:3000
 
 # Google OAuth
-GOOGLE_CLIENT_ID=<tu-client-id>.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=<tu-client-secret>
+GOOGLE_CLIENT_ID=<your-client-id>.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=<your-client-secret>
 
-# Cloudflare (requerido para deploy)
-CLOUDFLARE_ACCOUNT_ID=<tu-account-id>
-CLOUDFLARE_API_TOKEN=<tu-api-token>
+# Cloudflare (required for deploy)
+CLOUDFLARE_ACCOUNT_ID=<your-account-id>
+CLOUDFLARE_API_TOKEN=<your-api-token>
 ```
 
-**Google OAuth**: crear credenciales en [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials → OAuth client ID → Web application. Agregar `http://localhost:8787/api/auth/callback/google` como redirect URI autorizado.
+**Google OAuth**: Create credentials at [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials → OAuth client ID → Web application. Add `http://localhost:8787/api/auth/callback/google` as an authorized redirect URI.
 
-**Cloudflare**: obtener `CLOUDFLARE_ACCOUNT_ID` desde el [dashboard](https://dash.cloudflare.com) (barra lateral derecha) y `CLOUDFLARE_API_TOKEN` desde [API Tokens](https://dash.cloudflare.com/profile/api-tokens) con permisos Workers:Edit + Account:Read. Solo necesario si planeás hacer deploy.
+**Cloudflare**: Get `CLOUDFLARE_ACCOUNT_ID` from the [dashboard](https://dash.cloudflare.com) (right sidebar) and `CLOUDFLARE_API_TOKEN` from [API Tokens](https://dash.cloudflare.com/profile/api-tokens) with Workers:Edit + Account:Read permissions. Only needed if you plan to deploy.
 
-### 3. Crear base de datos local
+### 3. Create local database
 
 ```bash
-# Opción A: PostgreSQL local
+# Option A: Local PostgreSQL
 sudo -u postgres psql -c "CREATE DATABASE edgestack_dev;"
 
-# Opción B: Neon (serverless, recomendado para producción)
-# Crear proyecto en https://neon.tech y copiar la DATABASE_URL
+# Option B: Neon (serverless, recommended for production)
+# Create project at https://neon.tech and copy the DATABASE_URL
 ```
 
-### 4. Ejecutar migraciones
+### 4. Run migrations
 
 ```bash
 pnpm --filter @repo/database db:generate
 pnpm --filter @repo/database db:migrate
 ```
 
-Esto crea las tablas: `posts`, `user`, `session`, `account`, `verification`.
+This creates the tables: `posts`, `user`, `session`, `account`, `verification`.
 
-### 5. Arrancar los servicios
+### 5. Start services
 
 ```bash
 # Terminal 1 — API
@@ -103,15 +103,15 @@ pnpm --filter @repo/dash dev
 # → http://localhost:3000
 ```
 
-### 6. Probar autenticación
+### 6. Test authentication
 
-1. Abrir `http://localhost:3000`
-2. Click en **Sign In**
-3. Click en **Continue with Google**
-4. Autorizar en la ventana de Google
-5. Redirigido al Dash autenticado
+1. Open `http://localhost:3000`
+2. Click **Sign In**
+3. Click **Continue with Google**
+4. Authorize in the Google window
+5. Redirected to the authenticated Dash
 
-### 7. Arrancar otras apps (opcional)
+### 7. Start other apps (optional)
 
 ```bash
 pnpm --filter @repo/landing dev     # → http://localhost:4321
@@ -119,54 +119,94 @@ pnpm --filter @repo/blog dev        # → http://localhost:4322
 pnpm --filter @repo/docs dev        # → http://localhost:4323
 ```
 
-## 🏗️ Estructura del monorepo
+## 🏗️ Monorepo Structure
 
 ```
 apps/
-├── api/          ← 🔒 Auth + API REST (Hono + Workers)
+├── api/          ← 🔒 Auth + REST API (Hono + Workers)
 ├── dash/         ← 🖥️  Admin SSR (TanStack Start)
 ├── landing/      ← 📄 Marketing (Astro)
-├── blog/         ← ✍️  Contenido (Astro MDX)
-├── docs/         ← 📚 Documentación (Starlight)
-└── gateway/      ← 🚪 Router unificado (Cloudflare Service Bindings)
+├── blog/         ← ✍️  Content (Astro MDX)
+├── docs/         ← 📚 Documentation (Starlight)
+└── gateway/      ← 🚪 Unified Router (Cloudflare Service Bindings)
 
 packages/
-├── database/     ← 🗄️  Schema + Migraciones (Drizzle)
-├── api-types/    ← 🔗 Tipos RPC (Hono)
-└── ui/           ← 🎨 Componentes (shadcn/ui)
+├── database/     ← 🗄️  Schema + Migrations (Drizzle)
+├── api-types/    ← 🔗 RPC Types (Hono)
+└── ui/           ← 🎨 Components (shadcn/ui)
 
 tooling/
-├── biome-config/       ← 🧹 Linting + formato (Biome)
+├── biome-config/       ← 🧹 Linting + formatting (Biome)
 ├── tailwind-config/    ← 🎨 Tokens + dark mode (Tailwind CSS v4)
-├── testing/            ← 🧪 Setup de tests (Vitest + Workers pool)
-└── typescript-config/  ← ⚙️  TS configs base
+├── testing/            ← 🧪 Test setup (Vitest + Workers pool)
+└── typescript-config/  ← ⚙️  Base TS configs
 ```
 
-Cada directorio tiene su propio `README.md` con documentación específica.
+Each directory has its own `README.md` with specific documentation.
 
-## 🧪 Comandos útiles
+## 🧪 Useful Commands
 
 ```bash
-pnpm dev                          # Todas las apps en paralelo
-pnpm --filter @repo/api dev       # Solo API
-pnpm --filter @repo/database db:studio  # Explorer visual de BD
-pnpm --filter @repo/api-types build     # Rebuild de tipos RPC
+pnpm dev                          # All apps in parallel
+pnpm --filter @repo/api dev       # API only
+pnpm --filter @repo/database db:studio  # Visual DB Explorer
+pnpm --filter @repo/api-types build     # Rebuild RPC types
 ```
 
-## 🔧 Solución de problemas
+## 🔧 Troubleshooting
 
-| Problema | Solución |
+| Problem | Solution |
 |---|---|
-| `Cannot perform I/O on behalf of a different request` | El cliente DB se crea por request en Workers. Asegurate de no cachearlo globalmente |
-| `Invalid origin` en auth | Verificar `DASH_URL` en `apps/api/.env` |
-| `relation "verification" does not exist` | Ejecutar `pnpm --filter @repo/database db:migrate` |
-| Sesión no persiste después de login | Revisar cookies SameSite, CORS credentials, y `callbackURL` |
-| Error de tipos RPC | Rebuild `pnpm --filter @repo/api-types build` |
+| `Cannot perform I/O on behalf of a different request` | The DB client is created per request in Workers. Make sure not to cache it globally |
+| `Invalid origin` in auth | Verify `DASH_URL` in `apps/api/.env` |
+| `relation "verification" does not exist` | Run `pnpm --filter @repo/database db:migrate` |
+| Session doesn't persist after login | Review cookies SameSite, CORS credentials, and `callbackURL` |
+| RPC type errors | Rebuild: `pnpm --filter @repo/api-types build` |
 
-## 📚 Siguientes pasos
+## 🛠️ Customizing the Monorepo
 
-- Leer `apps/api/README.md` para entender la arquitectura de auth
-- Leer `apps/dash/README.md` para el flujo de autenticación
-- Leer `apps/gateway/README.md` para entender el ruteo unificado
-- Leer `packages/database/README.md` para el manejo de migraciones
-- Leer `packages/api-types/README.md` para extender tipos RPC
+If your project doesn't need all apps (e.g., only API + Dash + Landing), remove the ones you don't use and update the Gateway:
+
+```bash
+# Remove unused apps
+rm -rf apps/blog apps/docs
+```
+
+Then modify three files in the Gateway:
+
+- **`apps/gateway/wrangler.jsonc`** — remove the `BLOG` and `DOCS` bindings from `services` and from the `ROUTES` variable
+- **`apps/gateway/src/types.ts`** — remove `BLOG` and `DOCS` from the `Env` interface
+- **`apps/gateway/src/router.ts`** — remove `"BLOG"` and `"DOCS"` from `BINDING_KEYS`
+
+```bash
+# Verify everything compiles
+pnpm install && pnpm --filter @repo/gateway typecheck
+```
+
+TypeScript (`BindingKey`) ensures all three files stay consistent — if a binding is missing from `Env`, `router.ts` won't compile.
+
+### Adding a new app
+
+```bash
+mkdir -p apps/shop/src
+```
+
+Create `apps/shop/wrangler.jsonc` and `apps/shop/package.json` as a standard Worker. Then register it in three Gateway files:
+
+- **`apps/gateway/wrangler.jsonc`** — add binding `{ "binding": "SHOP", "service": "shop" }` and route `{"binding":"SHOP","path":"/shop"}` in `ROUTES`
+- **`apps/gateway/src/types.ts`** — add `SHOP: Fetcher` to the `Env` interface
+- **`apps/gateway/src/router.ts`** — add `"SHOP"` to `BINDING_KEYS`
+
+```bash
+pnpm install && pnpm --filter @repo/gateway typecheck
+```
+
+If you forget any of the three files, TypeScript won't compile.
+
+## 📚 Next Steps
+
+- Read `apps/api/README.md` to understand the auth architecture
+- Read `apps/dash/README.md` for the authentication flow
+- Read `apps/gateway/README.md` to understand unified routing
+- Read `packages/database/README.md` for migration handling
+- Read `packages/api-types/README.md` to extend RPC types

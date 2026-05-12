@@ -1,10 +1,10 @@
 # 🧪 `@repo/testing`
 
-Setup de tests compartido con [Vitest](https://vitest.dev) + [Cloudflare Workers pool](https://developers.cloudflare.com/workers/testing/vitest-integration/).
+Shared test setup with [Vitest](https://vitest.dev) + [Cloudflare Workers pool](https://developers.cloudflare.com/workers/testing/vitest-integration/).
 
-## Uso
+## Usage
 
-Cada app/package que necesite tests extiende esta configuración:
+Each app/package that needs tests extends this configuration:
 
 ```ts
 // vitest.config.ts

@@ -1,8 +1,8 @@
 # 🚪 `apps/gateway` — Cloudflare Gateway Worker (VMFE Router)
 
-Router Worker que implementa el patrón de [microfrontends verticales](https://developers.cloudflare.com/workers/framework-guides/web-apps/microfrontends/) de Cloudflare. Es el punto de entrada único para todas las apps del monorepo, usando [Service Bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/) para comunicación interna de cero latencia.
+Router Worker implementing [Cloudflare vertical microfrontends](https://developers.cloudflare.com/workers/framework-guides/web-apps/microfrontends/) pattern. It's the single entry point for all apps in the monorepo, using [Service Bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/) for zero-latency internal communication.
 
-## 🏗️ Estructura
+## 🏗️ Structure
 
 ```
 src/
@@ -13,14 +13,14 @@ src/
 wrangler.jsonc    # Service bindings + ROUTES + ASSET_PREFIXES + env vars
 ```
 
-## 🔄 Pipeline del Gateway
+## 🔄 Gateway Pipeline
 
 ```
 Request
   → parseRoutes(ROUTES env var)
   → matchRoute(pathname)
-  → validateBinding (503 si no existe)
-  → stripPath (/docs/instalacion → /instalacion)
+  → validateBinding (503 if not found)
+  → stripPath (/docs/installation → /installation)
   → fetcher.fetch(stripped)
   → response.ok?
       → rewriteResponse   (HTMLRewriter + CSS streaming)
@@ -30,15 +30,15 @@ Request
   → Response
 ```
 
-## 🚀 Arranque
+## 🚀 Startup
 
 ```bash
 pnpm --filter @repo/gateway dev
 ```
 
-> **Nota:** El gateway depende de los service bindings. En desarrollo local, cada Worker (`api`, `dash`, `blog`, `landing`, `docs`) debe estar corriendo en su propio `wrangler dev`.
+> **Note:** The gateway depends on service bindings. In local development, each Worker (`api`, `dash`, `blog`, `landing`, `docs`) must be running in its own `wrangler dev`.
 
-## 🗺️ Tabla de ruteo
+## 🗺️ Routing Table
 
 | Path | Worker | Binding |
 |---|---|---|
@@ -48,37 +48,37 @@ pnpm --filter @repo/gateway dev
 | `/docs/*` | Docs (Starlight) | `env.DOCS` |
 | `/*` | Landing (Astro) | `env.LANDING` (fallback) |
 
-El ruteo es **data-driven**: la variable `ROUTES` en `wrangler.jsonc` define el mapeo. Para agregar una app, solo se modifica esa variable, sin tocar código.
+Routing is **data-driven**: the `ROUTES` variable in `wrangler.jsonc` defines the mapping. To add an app, only that variable needs to be modified, without touching code.
 
 ## ✨ Features
 
 ### Path stripping
-`/docs/instalacion` → el Worker de Docs recibe `/instalacion`. Cada microfrontend funciona como si estuviera en su propia raíz.
+`/docs/installation` → the Docs Worker receives `/installation`. Each microfrontend works as if it were at its own root.
 
 ### HTML + CSS rewriting
-`HTMLRewriter` reescribe `href`, `src`, `poster`, `action`, `srcset`, `data-*`, y `astro-component-url` para incluir el prefijo de ruta. CSS `url()` también se reescribe con streaming (sin buffering).
+`HTMLRewriter` rewrites `href`, `src`, `poster`, `action`, `srcset`, `data-*`, and `astro-component-url` to include the route prefix. CSS `url()` is also rewritten with streaming (no buffering).
 
 ### Header rewriting
-- **`Location`**: redirects relativos reciben el prefijo (`/login` → `/dash/login`)
-- **`Set-Cookie`**: paths de cookies ajustados al prefijo de montaje
+- **`Location`**: relative redirects receive the prefix (`/login` → `/dash/login`)
+- **`Set-Cookie`**: cookie paths adjusted to the mount prefix
 
 ### View Transitions
-CSS inyectado en `<head>` para transiciones suaves entre microfrontends (configurable vía `ENABLE_VIEW_TRANSITIONS` env var).
+CSS injected in `<head>` for smooth transitions between microfrontends (configurable via `ENABLE_VIEW_TRANSITIONS` env var).
 
 ### Speculation Rules
-`<script type="speculationrules">` con URLs a precargar para navegación instantánea (rutas con `preload: true` en `ROUTES`).
+`<script type="speculationrules">` with URLs to preload for instant navigation (routes with `preload: true` in `ROUTES`).
 
-## ⚙️ Variables de entorno
+## ⚙️ Environment Variables
 
-| Variable | Descripción | Default |
+| Variable | Description | Default |
 |---|---|---|
-| `ROUTES` | JSON con mapeo de rutas a bindings | Requerido |
-| `ASSET_PREFIXES` | JSON array de prefijos de assets a reescribir | `["/assets/", "/static/", "/build/", "/_astro/", "/_vite/", "/fonts/"]` |
-| `ENABLE_VIEW_TRANSITIONS` | Activa CSS de View Transitions | `true` |
+| `ROUTES` | JSON with route-to-binding mapping | Required |
+| `ASSET_PREFIXES` | JSON array of asset prefixes to rewrite | `["/assets/", "/static/", "/build/", "/_astro/", "/_vite/", "/fonts/"]` |
+| `ENABLE_VIEW_TRANSITIONS` | Activates View Transitions CSS | `true` |
 
-## 🔒 Security headers
+## 🔒 Security Headers
 
-| Header | Valor |
+| Header | Value |
 |---|---|
 | `X-Content-Type-Options` | `nosniff` |
 | `X-Frame-Options` | `DENY` |
@@ -87,7 +87,7 @@ CSS inyectado en `<head>` para transiciones suaves entre microfrontends (configu
 
 ## 📊 Logging
 
-Structured logging en formato JSON:
+Structured logging in JSON format:
 
 ```json
 {
@@ -100,7 +100,7 @@ Structured logging en formato JSON:
 }
 ```
 
-Errores: `502 Bad Gateway` (servicio no responde), `503 Service Unavailable` (binding no encontrado).
+Errors: `502 Bad Gateway` (service not responding), `503 Service Unavailable` (binding not found).
 
 ## 🔗 Service Bindings
 
@@ -116,4 +116,4 @@ Errores: `502 Bad Gateway` (servicio no responde), `503 Service Unavailable` (bi
 }
 ```
 
-**Los nombres de `service` deben coincidir exactamente con `name` en el `wrangler.jsonc` de cada Worker.**
+**The `service` names must match exactly with `name` in each Worker's `wrangler.jsonc`.**

@@ -1,58 +1,58 @@
 # 🧹 `@repo/biome-config`
 
-Configuración centralizada de [Biome](https://biomejs.dev) para linting, formato y organización de imports compartida entre todas las apps y paquetes del monorepo.
+Centralized [Biome](https://biomejs.dev) configuration for linting, formatting, and import organization shared across all apps and packages in the monorepo.
 
-## 🎯 ¿Por qué Biome?
+## 🎯 Why Biome?
 
-Biome reemplaza ESLint + Prettier con una sola herramienta, más rápida y con configuración mínima. Soporta TypeScript, JSX, JSON y CSS out of the box.
+Biome replaces ESLint + Prettier with a single, faster tool with minimal configuration. Supports TypeScript, JSX, JSON, and CSS out of the box.
 
-## 🏗️ Estructura
+## 🏗️ Structure
 
 ```
-biome.json         # Config base — todas las apps/paquetes
-react.json         # Extiende base para apps React/JSX
-cloudflare.json    # Extiende base para Workers (reglas más permisivas)
+biome.json         # Base config — all apps/packages
+react.json         # Extends base for React/JSX apps
+cloudflare.json    # Extends base for Workers (more permissive rules)
 ```
 
-## 📋 Reglas configuradas
+## 📋 Configured Rules
 
-### Formato
+### Formatting
 
-| Regla | Valor |
+| Rule | Value |
 |---|---|
-| Indentación | Tabs, 2 espacios |
-| Ancho de línea | 80 caracteres |
-| Fin de línea | LF (Unix) |
-| Comillas | Dobles (`"`) |
-| Comillas JSX | Dobles (`"`) |
-| Punto y coma | Siempre |
-| Comas finales | Siempre (excepto JSON) |
-| Paréntesis en arrow functions | Siempre |
+| Indentation | Tabs, 2 spaces |
+| Line width | 80 characters |
+| Line endings | LF (Unix) |
+| Quotes | Double (`"`) |
+| JSX Quotes | Double (`"`) |
+| Semicolons | Always |
+| Trailing commas | Always (except JSON) |
+| Arrow function parentheses | Always |
 
 ### Linting
 
-| Regla | Nivel | Descripción |
+| Rule | Level | Description |
 |---|---|---|
-| `noUnusedVariables` | `error` | Variables no usadas (ignora prefijo `_`) |
-| `noUnusedImports` | `error` | Imports no usados |
-| `noExplicitAny` | `warn` | Uso de `any` explícito |
-| `recommended` | `true` | Todas las reglas recomendadas de Biome |
+| `noUnusedVariables` | `error` | Unused variables (ignores `_` prefix) |
+| `noUnusedImports` | `error` | Unused imports |
+| `noExplicitAny` | `warn` | Explicit `any` usage |
+| `recommended` | `true` | All recommended Biome rules |
 
-### Asistencias
+### Assists
 
-| Acción | Configuración |
+| Action | Configuration |
 |---|---|
-| `organizeImports` | `on` — organiza imports al guardar |
+| `organizeImports` | `on` — organizes imports on save |
 
 ### VCS
 
-Integrado con Git — respeta `.gitignore` y excluye `dist/`, `build/`, `.output/`, `.next/`, `node_modules/`, `worker-configuration.d.ts`.
+Integrated with Git — respects `.gitignore` and excludes `dist/`, `build/`, `.output/`, `.next/`, `node_modules/`, `worker-configuration.d.ts`.
 
-## 📦 Variantes
+## 📦 Variants
 
 ### `@repo/biome-config` (base)
 
-Para paquetes sin JSX ni Workers. Usado por `packages/database`, `packages/api-types`, `packages/ui`, y tooling packages.
+For packages without JSX or Workers. Used by `packages/database`, `packages/api-types`, `packages/ui`, and tooling packages.
 
 ```jsonc
 // biome.json
@@ -61,7 +61,7 @@ Para paquetes sin JSX ni Workers. Usado por `packages/database`, `packages/api-t
 
 ### `@repo/biome-config/react`
 
-Extiende la base. Para apps con React/JSX: `apps/dash`.
+Extends base. For apps with React/JSX: `apps/dash`.
 
 ```jsonc
 // biome.json
@@ -70,49 +70,49 @@ Extiende la base. Para apps con React/JSX: `apps/dash`.
 
 ### `@repo/biome-config/cloudflare`
 
-Extiende la base con reglas más permisivas. `noUnusedVariables` y `noUnusedImports` bajan a `warn` porque Workers usa imports con efectos secundarios (`import "hono/cors"`). Usado por `apps/api` y `apps/gateway`.
+Extends base with more permissive rules. `noUnusedVariables` and `noUnusedImports` are set to `warn` because Workers use imports with side effects (`import "hono/cors"`). Used by `apps/api` and `apps/gateway`.
 
 ```jsonc
 // biome.json
 { "extends": ["@repo/biome-config/cloudflare"] }
 ```
 
-## 🚀 Comandos
+## 🚀 Commands
 
 ```bash
-# En cualquier app/package
-pnpm format       # Formatear código
-pnpm lint         # Ejecutar linter
-pnpm check        # Formato + lint juntos
+# In any app/package
+pnpm format       # Format code
+pnpm lint         # Run linter
+pnpm check        # Format + lint together
 ```
 
-Desde la raíz del monorepo:
+From the monorepo root:
 
 ```bash
-pnpm check        # Ejecutar en todas las apps/paquetes
+pnpm check        # Run in all apps/packages
 ```
 
-## ➕ Agregar reglas
+## ➕ Adding Rules
 
-Para agregar una regla que aplique a todos, editar `biome.json`:
+To add a rule that applies to everyone, edit `biome.json`:
 
 ```jsonc
 {
   "linter": {
     "rules": {
       "style": {
-        "useConst": "error",        // Preferir const sobre let
-        "useTemplate": "error"      // Template literals sobre concatenación
+        "useConst": "error",        // Prefer const over let
+        "useTemplate": "error"      // Template literals over concatenation
       }
     }
   }
 }
 ```
 
-Para reglas específicas de un entorno, editar `react.json` o `cloudflare.json`.
+For environment-specific rules, edit `react.json` or `cloudflare.json`.
 
-## 🔗 Referencias
+## 🔗 References
 
 - [Biome CLI](https://biomejs.dev/reference/cli/)
-- [Reglas de lint](https://biomejs.dev/linter/rules/)
-- [Configuración](https://biomejs.dev/reference/configuration/)
+- [Lint rules](https://biomejs.dev/linter/rules/)
+- [Configuration](https://biomejs.dev/reference/configuration/)

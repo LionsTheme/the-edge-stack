@@ -4,7 +4,7 @@ Edge-first monorepo boilerplate designed for ultra-fast applications. Built with
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/LionsTheme/the-edge-stack)
 
-> **📚 Documentación Extendida:** Visita nuestra [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki) para guías detalladas paso a paso sobre cada tecnología del stack.
+> **📚 Extended Documentation:** Visit our [Wiki](https://github.com/LionsTheme/the-edge-stack/wiki) for detailed step-by-step guides on every technology in the stack.
 
 ---
 
@@ -131,7 +131,7 @@ pnpm install
 
 ### 3. Configure Environment Variables
 
-Cada app gestiona sus propias variables. La API es la única que requiere configuración:
+Each app manages its own environment variables. The API is the only one that requires configuration:
 
 ```bash
 cp apps/api/.env.example apps/api/.env
@@ -359,6 +359,88 @@ The Cloudflare Gateway Worker unifies all apps under a single domain:
 | `/*` | Landing page | Astro |
 
 This eliminates CORS issues and simplifies authentication.
+
+---
+
+## 🛠️ Customizing the Monorepo
+
+Not every project needs all 6 apps. Here's how to trim the boilerplate:
+
+### Remove unused apps
+
+```bash
+rm -rf apps/blog apps/docs
+```
+
+### Update the Gateway
+
+Three files need minor changes:
+
+**1. `apps/gateway/wrangler.jsonc`** — remove unused service bindings and routes:
+
+```jsonc
+"services": [
+  { "binding": "API", "service": "api" },
+  { "binding": "DASH", "service": "dash" },
+  { "binding": "LANDING", "service": "landing" }
+]
+```
+
+**2. `apps/gateway/src/types.ts`** — remove unused bindings from `Env`:
+
+```ts
+export interface Env {
+  API: Fetcher;
+  DASH: Fetcher;
+  LANDING: Fetcher;
+  ROUTES: string;
+  ASSET_PREFIXES?: string;
+}
+```
+
+**3. `apps/gateway/src/router.ts`** — remove from `BINDING_KEYS`:
+
+```ts
+const BINDING_KEYS = new Set<BindingKey>(["API", "DASH", "LANDING"]);
+```
+
+TypeScript (`BindingKey`) keeps everything consistent — if a binding is missing from `Env`, `router.ts` won't compile.
+
+### Verify
+
+```bash
+pnpm install && pnpm --filter @repo/gateway typecheck
+```
+
+### Add a new app
+
+```bash
+mkdir -p apps/shop/src
+```
+
+Create `apps/shop/wrangler.jsonc` and `apps/shop/package.json` as a standard Cloudflare Worker, then register it in three Gateway files:
+
+**1. `apps/gateway/wrangler.jsonc`** — add binding + route:
+
+```jsonc
+"services": [
+  { "binding": "SHOP", "service": "shop" }
+]
+```
+
+**2. `apps/gateway/src/types.ts`** — add to `Env`:
+
+```ts
+SHOP: Fetcher;
+```
+
+**3. `apps/gateway/src/router.ts`** — add to `BINDING_KEYS`:
+
+```ts
+"SHOP"
+```
+
+TypeScript ensures all three stay in sync. Missing one → compile error.
 
 ---
 

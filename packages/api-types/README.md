@@ -1,17 +1,17 @@
 # 🔗 `@repo/api-types` — Hono RPC Types
 
-Paquete ligero que re-exporta `AppType` desde `apps/api` para consumo tipado en frontends vía [Hono RPC](https://hono.dev/docs/guides/rpc).
+Lightweight package that re-exports `AppType` from `apps/api` for typed consumption in frontends via [Hono RPC](https://hono.dev/docs/guides/rpc).
 
-## 📦 Estructura
+## 📦 Structure
 
 ```
 src/
 └── index.ts    # export type { AppType } from "@repo/api"
 ```
 
-## 🎯 Propósito
+## 🎯 Purpose
 
-Hono RPC permite que el cliente (Dashboard, etc.) obtenga autocompletado en todas las llamadas al API:
+Hono RPC allows the client (Dashboard, etc.) to get autocomplete on all API calls:
 
 ```ts
 // Dashboard: lib/api.ts
@@ -20,13 +20,13 @@ import type { AppType } from "@repo/api-types";
 
 export const api = hc<AppType>("/api");
 
-// ✅ Autocompletado en rutas, query params, body y respuesta
+// ✅ Autocomplete on routes, query params, body, and response
 const res = await api.message.$get({ query: { name: "Hono" } });
 //                                   ^? { name?: string | undefined }
 // res.json() → { message: string }
 ```
 
-## 🔄 Cómo funciona
+## 🔄 How It Works
 
 ```
 apps/api/src/routes.ts ──export type AppType──► @repo/api-types ──► apps/dash
@@ -34,19 +34,19 @@ apps/api/src/routes.ts ──export type AppType──► @repo/api-types ──
                                                  hc<AppType>("/api")
 ```
 
-1. `apps/api/src/routes.ts` define las rutas con Zod validation y exporta `AppType`
-2. `apps/api/package.json` tiene `"exports": { ".": "./src/routes.ts" }` — así `@repo/api` es resoluble
-3. `@repo/api-types` re-exporta `export type { AppType } from "@repo/api"`
-4. El Dashboard importa `AppType` y lo usa con `hc<AppType>(url)`
+1. `apps/api/src/routes.ts` defines routes with Zod validation and exports `AppType`
+2. `apps/api/package.json` has `"exports": { ".": "./src/routes.ts" }` — so `@repo/api` is resolvable
+3. `@repo/api-types` re-exports `export type { AppType } from "@repo/api"`
+4. The Dashboard imports `AppType` and uses it with `hc<AppType>(url)`
 
-### ¿Por qué `routes.ts` separado de `index.ts`?
+### Why `routes.ts` separate from `index.ts`?
 
-`index.ts` incluye `CloudflareBindings` (tipos de Workers). `routes.ts` usa `new Hono()` sin bindings, manteniendo `AppType` portable — los frontends no necesitan resolver tipos de Cloudflare.
+`index.ts` includes `CloudflareBindings` (Worker types). `routes.ts` uses `new Hono()` without bindings, keeping `AppType` portable — frontends don't need to resolve Cloudflare types.
 
-## 📝 Extender
+## 📝 Extending
 
-Para agregar nuevas rutas tipadas:
+To add new typed routes:
 
-1. Agregá el endpoint en `apps/api/src/routes.ts` con validación Zod
-2. El tipo se infiere automáticamente en `AppType`
+1. Add the endpoint in `apps/api/src/routes.ts` with Zod validation
+2. The type is inferred automatically in `AppType`
 3. Rebuild: `pnpm --filter @repo/api-types build`

@@ -1,44 +1,44 @@
 # 🖥️ `apps/dash` — TanStack Start
 
-Dash SSR con [TanStack Start](https://tanstack.com/start) + [React 19](https://react.dev). Autenticación con Google OAuth, rutas protegidas y consumo tipado del API vía Hono RPC.
+SSR dashboard with [TanStack Start](https://tanstack.com/start) + [React 19](https://react.dev). Authentication with Google OAuth, protected routes, and typed API consumption via Hono RPC.
 
-## 🏗️ Estructura
+## 🏗️ Structure
 
 ```
 src/
 ├── routes/
-│   ├── __root.tsx              # Layout raíz (head, estilos, devtools)
-│   ├── index.tsx               # Home pública — muestra sesión si existe
-│   ├── sign-in.tsx             # Sign-in con Google OAuth
-│   ├── _protected.tsx          # Layout protegido — beforeLoad verifica sesión
+│   ├── __root.tsx              # Root layout (head, styles, devtools)
+│   ├── index.tsx               # Public home — shows session if available
+│   ├── sign-in.tsx             # Sign-in with Google OAuth
+│   ├── _protected.tsx          # Protected layout — beforeLoad verifies session
 │   └── _protected/
-│       └── dashboard.tsx       # Dash — muestra usuario, botón sign-out
+│       └── dashboard.tsx       # Dash — shows user, sign-out button
 ├── lib/
-│   ├── api.ts                  # Cliente Hono RPC (hc<AppType>)
-│   ├── auth-client.ts          # Cliente Better Auth React
-│   └── auth.functions.ts       # Server function para verificar sesión en SSR
-├── router.tsx                  # Configuración de TanStack Router
-├── routeTree.gen.ts            # Árbol de rutas autogenerado
+│   ├── api.ts                  # Hono RPC client (hc<AppType>)
+│   ├── auth-client.ts          # Better Auth React client
+│   └── auth.functions.ts       # Server function to verify session in SSR
+├── router.tsx                  # TanStack Router configuration
+├── routeTree.gen.ts            # Auto-generated route tree
 └── styles.css                  # Tailwind CSS + tokens
 vite.config.ts                  # Vite + Cloudflare plugin + TanStack Start
 ```
 
-## 🚀 Arranque
+## 🚀 Startup
 
 ```bash
 pnpm --filter @repo/dash dev
 ```
 
-Accesible en `http://localhost:3000`.
+Available at `http://localhost:3000`.
 
-## 🔐 Flujo de autenticación
+## 🔐 Authentication Flow
 
 ```
-Usuario → /sign-in → Google OAuth → API callback → cookie de sesión
+User → /sign-in → Google OAuth → API callback → session cookie
                                                          ↓
-                                               redirect a /dash
+                                               redirect to /dash
                                                          ↓
-                                        _protected.tsx verifica sesión (SSR)
+                                        _protected.tsx verifies session (SSR)
 ```
 
 ### Client-side
@@ -54,22 +54,22 @@ export const { signIn, signOut, useSession } = authClient;
 ```ts
 // lib/auth.functions.ts
 export const getSession = createServerFn().handler(async () => {
-  const request = getRequest();                    // Request original
-  const cookie = request.headers.get("cookie");    // Forward de cookies
+  const request = getRequest();                    // Original request
+  const cookie = request.headers.get("cookie");    // Forward cookies
   const res = await fetch(`${apiUrl}/api/auth/get-session`, { headers: { cookie } });
   // ...
 });
 ```
 
-La server function usa `getRequest()` de TanStack Start para acceder a los headers del request original, forwardea la cookie al API, y devuelve la sesión validada.
+The server function uses `getRequest()` from TanStack Start to access the original request headers, forwards the cookie to the API, and returns the validated session.
 
-### Rutas protegidas
+### Protected Routes
 
-El layout `_protected.tsx` ejecuta `beforeLoad` → `getSession()`. Si no hay sesión, redirige a `/sign-in`. Las rutas hijas reciben `{ user }` en el contexto.
+The `_protected.tsx` layout runs `beforeLoad` → `getSession()`. If there's no session, it redirects to `/sign-in`. Child routes receive `{ user }` in the context.
 
 ## 🔗 Hono RPC
 
-Cliente tipado vía `@repo/api-types`:
+Typed client via `@repo/api-types`:
 
 ```ts
 // lib/api.ts
@@ -77,22 +77,22 @@ import { hc } from "hono/client";
 import type { AppType } from "@repo/api-types";
 export const api = hc<AppType>("/api");
 
-// Autocompletado en .$get(), query params y respuesta
+// Autocomplete in .$get(), query params and response
 const res = await api.message.$get({ query: { name: "Hono" } });
 ```
 
-## 📦 Variables de entorno
+## 📦 Environment Variables
 
-| Variable | Descripción |
+| Variable | Description |
 |---|---|
-| `VITE_API_URL` | URL del API (default: `http://localhost:8787`) |
+| `VITE_API_URL` | API URL (default: `http://localhost:8787`) |
 
-## 🧠 Decisiones de diseño
+## 🧠 Design Decisions
 
-| Decisión | Razón |
+| Decision | Reason |
 |---|---|
-| Server function forwardea cookies al API | El Dashboard no tiene acceso directo a Better Auth — la API es single source of truth |
-| `getRequest()` en lugar de `getRequestHeaders()` | API estable de TanStack Start; devuelve un objeto Request estándar |
-| `window.location.origin` para callbackURL | Resuelve dinámicamente en cualquier entorno (dev, preview, prod) |
-| Layout `_protected` con `beforeLoad` | Patrón oficial de TanStack Router para rutas protegidas |
-| `useSession()` en cliente, `getSession()` en SSR | El navegador envía cookies automáticamente; el servidor necesita forward explícito |
+| Server function forwards cookies to API | The Dashboard doesn't have direct access to Better Auth — the API is the single source of truth |
+| `getRequest()` instead of `getRequestHeaders()` | Stable TanStack Start API; returns a standard Request object |
+| `window.location.origin` for callbackURL | Resolves dynamically in any environment (dev, preview, prod) |
+| `_protected` layout with `beforeLoad` | Official TanStack Router pattern for protected routes |
+| `useSession()` on client, `getSession()` in SSR | The browser sends cookies automatically; the server needs explicit forwarding |

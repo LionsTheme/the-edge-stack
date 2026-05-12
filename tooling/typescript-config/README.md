@@ -1,20 +1,20 @@
 # ⚙️ `@repo/typescript-config`
 
-Configuraciones base de TypeScript compartidas entre todas las apps y paquetes.
+Shared base TypeScript configurations across all apps and packages.
 
-## Archivos
+## Files
 
-| Archivo | Uso |
+| File | Usage |
 |---|---|
-| `base.json` | Config base (strict, ES2022, bundler resolution) |
-| `react.json` | Extiende base + JSX para apps React |
-| `cloudflare.json` | Extiende base + tipos de Cloudflare Workers |
-| `astro.json` | Extiende base + configuración Astro |
+| `base.json` | Base config (strict, ES2022, bundler resolution) |
+| `react.json` | Extends base + JSX for React apps |
+| `cloudflare.json` | Extends base + Cloudflare Workers types |
+| `astro.json` | Extends base + Astro configuration |
 
-## Uso
+## Usage
 
 ```jsonc
-// tsconfig.json en cualquier app/package
+// tsconfig.json in any app/package
 {
   "extends": "@repo/typescript-config/react.json"
 }
