@@ -1,36 +1,21 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
+	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "gateway",
+	"main": "./index.ts",
 	"compatibility_date": "2026-05-12",
-	"main": "src/index.ts",
 	"compatibility_flags": ["nodejs_compat"],
-	"observability": {
-		"enabled": true
-	},
+	"workers_dev": true,
 	"services": [
-		{
-			"binding": "API",
-			"service": "api"
-		},
-		{
-			"binding": "DASH",
-			"service": "dash"
-		},
-		{
-			"binding": "BLOG",
-			"service": "blog"
-		},
-		{
-			"binding": "LANDING",
-			"service": "landing"
-		},
-		{
-			"binding": "DOCS",
-			"service": "docs"
-		}
+		{ "binding": "API",     "service": "api" },
+		{ "binding": "DASH",    "service": "dash" },
+		{ "binding": "BLOG",    "service": "blog" },
+		{ "binding": "LANDING", "service": "landing" },
+		{ "binding": "DOCS",    "service": "docs" }
 	],
 	"vars": {
 		"ROUTES": "{\"smoothTransitions\":true,\"routes\":[{\"binding\":\"API\",\"path\":\"/api\"},{\"binding\":\"DASH\",\"path\":\"/dash\"},{\"binding\":\"BLOG\",\"path\":\"/blog\"},{\"binding\":\"DOCS\",\"path\":\"/docs\"},{\"binding\":\"LANDING\",\"path\":\"/:path*\"}]}",
-		"ASSET_PREFIXES": "[\"/assets/\",\"/static/\",\"/build/\",\"/_astro/\",\"/_vite/\",\"/@vite/\",\"/@id/\",\"/@fs/\",\"/@react-refresh\",\"/@tanstack-start/\",\"/src/\",\"/node_modules/\",\"/fonts/\"]"
-	}
+		"ASSET_PREFIXES": "[\"/assets/\",\"/static/\",\"/build/\",\"/_astro/\",\"/_next\",\"/fonts/\",\"/_vite/\",\"/@vite/\",\"/@id/\",\"/@fs/\",\"/@react-refresh\",\"/@tanstack-start/\",\"/src/\",\"/node_modules/\"]"
+	},
+	"observability": { "enabled": true },
+	"upload_source_maps": true
 }
