@@ -5,6 +5,17 @@ import { signIn } from "#/lib/auth-client";
 export const Route = createFileRoute("/sign-in")({ component: SignIn });
 
 function SignIn() {
+	const handleSignIn = async () => {
+		try {
+			await signIn.social({
+				provider: "google",
+				callbackURL: `${window.location.origin}/dashboard`,
+			});
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	return (
 		<div className="flex min-h-screen items-center justify-center">
 			<div className="w-full max-w-sm space-y-6 rounded-lg border p-8 shadow-sm">
@@ -14,16 +25,7 @@ function SignIn() {
 						Welcome to The Edge Stack
 					</p>
 				</div>
-				<Button
-					className="w-full"
-					variant="outline"
-					onClick={() =>
-						signIn.social({
-							provider: "google",
-							callbackURL: `${window.location.origin}/dashboard`,
-						})
-					}
-				>
+				<Button className="w-full" variant="outline" onClick={handleSignIn}>
 					<svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
 						<path
 							d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
