@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 /**
  * Better Auth CLI configuration file
  * Used to regenerate the Drizzle schema for auth tables.
@@ -7,12 +9,15 @@
  *
  * Usage: pnpm dlx @better-auth/cli@latest generate --config ./better-auth.config.ts --output ./src/db/auth-schema.ts
  */
-import { getDb } from "@repo/database";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { getDb, schema } from "@repo/database";
 import { betterAuth } from "better-auth";
-import * as schema from "@repo/database/schema";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
-const db = getDb(process.env.DATABASE_URL!);
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+	throw new Error("DATABASE_URL is required");
+}
+const db = getDb(databaseUrl);
 
 export const auth = betterAuth({
 	database: drizzleAdapter(db, { provider: "pg", schema }),
