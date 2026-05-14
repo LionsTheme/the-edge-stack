@@ -38,6 +38,76 @@ Available at `http://localhost:8787`.
 
 Better Auth lives **inside the API**, not in a separate package. It follows the [official Hono + Better Auth integration pattern](https://better-auth.com/docs/integrations/hono).
 
+### Cross-Domain & Cross-Subdomain Authentication
+
+Session cookies require special configuration when the API and frontend don't share the same origin. This boilerplate covers three deployment scenarios automatically:
+
+#### Scenario A: Same origin (no config needed)
+
+Everything runs under one domain — the Gateway pattern, or any reverse proxy setup.
+
+```
+https://example.com/api/*     → API Worker
+https://example.com/dash/*    → Dash
+https://example.com/*         → Landing, Blog, Docs
+```
+
+Cookies are set with `Path=/` and flow naturally between all apps. **No extra configuration required** — `getCrossSubdomainConfig()` returns `undefined`.
+
+> This is the default using `apps/gateway` via Cloudflare Service Bindings.
+
+#### Scenario B: Different subdomains (automatic)
+
+Each app is deployed independently on its own Worker subdomain.
+
+```
+https://api.example.com       → API Worker
+https://dash.example.com      → Dash
+```
+
+`getCrossSubdomainConfig()` detects the parent domain (`example.com`) and enables `crossSubDomainCookies` so the session cookie is shared across all subdomains.
+
+```ts
+// Automatically applied:
+advanced: {
+  crossSubDomainCookies: {
+    enabled: true,
+    domain: "example.com",  // derived from BETTER_AUTH_URL
+  },
+}
+```
+
+For Cloudflare Workers dev domains (`api.ljrm.workers.dev` + `dash.ljrm.workers.dev`), the domain `ljrm.workers.dev` is extracted the same way.
+
+#### Scenario C: Completely different domains (proxy required)
+
+When API and frontend use unrelated domains, **cookies cannot be shared directly**. You must proxy `/api/*` through the frontend domain:
+
+```
+# Vercel (vercel.json)
+{ "rewrites": [{ "source": "/api/:path*",
+                 "destination": "https://api.foo.com/api/:path*" }] }
+
+# Netlify (netlify.toml)
+[[redirects]]
+  from = "/api/*"
+  to = "https://api.foo.com/api/:splat"
+  status = 200
+
+# Cloudflare Pages (_routes.json or wrangler)
+# Already handled natively by the Gateway
+```
+
+This makes `/api/*` appear first-party to the browser, allowing cookies (and Safari ITP) to work correctly.
+
+| Scenario | Domain config | `crossSubDomainCookies` | Proxy needed |
+|---|---|---|---|
+| Gateway | `example.com` (single) | ❌ auto-detected | ❌ built-in |
+| Subdominios | `api.example.com` + `dash.example.com` | ✅ auto-detected | ❌ |
+| Dominios distintos | `api.foo.com` + `dash.bar.com` | N/A | ✅ required |
+
+> 📖 [Better Auth: Safari, ITP, and Cross-Domain Setups](https://better-auth.com/docs/concepts/cookies#safari-itp-and-cross-domain-setups)
+
 ### Why `createAuth(env)` per request?
 
 Cloudflare Workers isolates I/O between requests. `postgres-js` TCP connections cannot be shared. Creating a new instance per request is the documented solution.
