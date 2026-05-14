@@ -1,5 +1,7 @@
 # 🔒 `apps/api` — Hono API + Better Auth
 
+(**TEST COMMENT**)
+
 Type-safe REST API with [Hono](https://hono.dev) deployed on [Cloudflare Workers](https://workers.cloudflare.com). Handles authentication (Better Auth), validation (Zod), and exposes RPC types for typed consumption from the frontend.
 
 ## 🏗️ Structure
@@ -25,14 +27,14 @@ Available at `http://localhost:8787`.
 
 ## 📦 Environment Variables (`.dev.vars`)
 
-| Variable               | Description                                      |
-| ---------------------- | ------------------------------------------------ |
-| `DATABASE_URL`         | PostgreSQL connection (Neon or local)             |
-| `BETTER_AUTH_URL`      | Public API URL (`http://localhost:8787`)         |
-| `BETTER_AUTH_SECRET`   | Secret for signing tokens (min 32 chars)         |
-| `DASH_URL`             | Frontend URL for CORS and trusted origins        |
-| `GOOGLE_CLIENT_ID`     | Google OAuth Client ID                           |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret                       |
+| Variable               | Description                               |
+| ---------------------- | ----------------------------------------- |
+| `DATABASE_URL`         | PostgreSQL connection (Neon or local)     |
+| `BETTER_AUTH_URL`      | Public API URL (`http://localhost:8787`)  |
+| `BETTER_AUTH_SECRET`   | Secret for signing tokens (min 32 chars)  |
+| `DASH_URL`             | Frontend URL for CORS and trusted origins |
+| `GOOGLE_CLIENT_ID`     | Google OAuth Client ID                    |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret                |
 
 ## 🔐 Authentication
 
@@ -100,11 +102,11 @@ When API and frontend use unrelated domains, **cookies cannot be shared directly
 
 This makes `/api/*` appear first-party to the browser, allowing cookies (and Safari ITP) to work correctly.
 
-| Scenario | Domain config | `crossSubDomainCookies` | Proxy needed |
-|---|---|---|---|
-| Gateway | `example.com` (single) | ❌ auto-detected | ❌ built-in |
-| Subdominios | `api.example.com` + `dash.example.com` | ✅ auto-detected | ❌ |
-| Dominios distintos | `api.foo.com` + `dash.bar.com` | N/A | ✅ required |
+| Scenario           | Domain config                          | `crossSubDomainCookies` | Proxy needed |
+| ------------------ | -------------------------------------- | ----------------------- | ------------ |
+| Gateway            | `example.com` (single)                 | ❌ auto-detected        | ❌ built-in  |
+| Subdominios        | `api.example.com` + `dash.example.com` | ✅ auto-detected        | ❌           |
+| Dominios distintos | `api.foo.com` + `dash.bar.com`         | N/A                     | ✅ required  |
 
 > 📖 [Better Auth: Safari, ITP, and Cross-Domain Setups](https://better-auth.com/docs/concepts/cookies#safari-itp-and-cross-domain-setups)
 
@@ -136,18 +138,18 @@ export const api = hc<AppType>("/api");
 
 ## 📡 Endpoints
 
-| Method | Path             | Description                                         |
-| ------ | ---------------- | --------------------------------------------------- |
-| `GET`  | `/health`        | Health check                                        |
+| Method | Path             | Description                                           |
+| ------ | ---------------- | ----------------------------------------------------- |
+| `GET`  | `/health`        | Health check                                          |
 | `GET`  | `/message?name=` | Demo with Zod validation (typed query params via RPC) |
-| `*`    | `/api/auth/*`    | Better Auth (sign-in, callback, session, sign-out)  |
+| `*`    | `/api/auth/*`    | Better Auth (sign-in, callback, session, sign-out)    |
 
 ## 🧠 Design Decisions
 
-| Decision                     | Reason                                                                                                  |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Auth in API, not in package  | Follows the [official pattern](https://better-auth.com/docs/integrations/hono); avoids unnecessary abstraction |
-| `createAuth()` per-request   | Workers I/O isolation — TCP connections cannot be shared between requests                              |
-| `routes.ts` separate from `index.ts` | Separates RPC types (without bindings) from Worker configuration                          |
-| Dual DB driver               | Neon (`neon-http`) in production, local PostgreSQL (`postgres-js`) in development                       |
-| Zod for validations          | Types inferred automatically via Hono RPC                                                               |
+| Decision                             | Reason                                                                                                         |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| Auth in API, not in package          | Follows the [official pattern](https://better-auth.com/docs/integrations/hono); avoids unnecessary abstraction |
+| `createAuth()` per-request           | Workers I/O isolation — TCP connections cannot be shared between requests                                      |
+| `routes.ts` separate from `index.ts` | Separates RPC types (without bindings) from Worker configuration                                               |
+| Dual DB driver                       | Neon (`neon-http`) in production, local PostgreSQL (`postgres-js`) in development                              |
+| Zod for validations                  | Types inferred automatically via Hono RPC                                                                      |
