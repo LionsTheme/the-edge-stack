@@ -8,11 +8,11 @@
 	"scripts": {
 		"dev": "astro dev",
 		"build": "astro build",
-		"preview": "astro build && wrangler pages dev",
+		"preview": "astro build && wrangler dev",
 		"typecheck": "tsc --noEmit",
 		"astro": "astro",
 		"generate-types": "wrangler types",
-		"deploy": "astro build && wrangler pages deploy",
+		"deploy": "astro build && wrangler deploy",
 		"cf-typegen": "wrangler types",
 		"lint": "biome lint .",
 		"format": "biome format .",
