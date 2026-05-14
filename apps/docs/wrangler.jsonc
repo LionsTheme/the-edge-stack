@@ -5,13 +5,8 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "docs",
-	"main": "./dist/_worker.js/index.js",
 	"compatibility_date": "2026-05-14",
 	"compatibility_flags": ["nodejs_compat"],
-	"assets": {
-		"directory": "./dist",
-		"binding": "ASSETS"
-	},
 	"observability": {
 		"enabled": true
 	},
