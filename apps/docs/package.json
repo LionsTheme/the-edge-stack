@@ -8,7 +8,6 @@
 		"typecheck": "tsc --noEmit",
 		"build": "astro build",
 		"preview": "astro build && wrangler pages dev",
-		"prepare": "astro sync",
 		"astro": "astro",
 		"generate-types": "wrangler types",
 		"deploy": "astro build && wrangler pages deploy",
