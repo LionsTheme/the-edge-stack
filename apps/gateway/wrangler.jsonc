@@ -11,7 +11,7 @@
 		{ "binding": "DOCS",    "service": "docs" }
 	],
 	"vars": {
-		"ROUTES": "{\"smoothTransitions\":true,\"routes\":[{\"binding\":\"BLOG\",\"path\":\"/blog\"},{\"binding\":\"DOCS\",\"path\":\"/docs\"},{\"binding\":\"LANDING\",\"path\":\"/:path*\"}]}",
+		"ROUTES": "{\"smoothTransitions\":true,\"routes\":[{\"binding\":\"BLOG\",\"path\":\"/blog\",\"preload\":true},{\"binding\":\"DOCS\",\"path\":\"/docs\"},{\"binding\":\"LANDING\",\"path\":\"/:path*\"}]}",
 		"ASSET_PREFIXES": "[\"/assets/\",\"/static/\",\"/build/\",\"/_astro/\",\"/_next\",\"/fonts/\",\"/_vite/\",\"/@vite/\",\"/@id/\",\"/@fs/\",\"/@react-refresh\",\"/@tanstack-start/\",\"/src/\",\"/node_modules/\"]"
 	},
 	"observability": { "enabled": true },

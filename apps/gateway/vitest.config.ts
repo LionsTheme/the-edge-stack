@@ -1,19 +1,19 @@
 import { defineWorkersProject } from "@cloudflare/vitest-pool-workers/config";
 
-// Stub Worker A - Returns HTML with asset references for testing URL rewriting
-const workerAScript = /* javascript */ `
+// Blog stub — Returns HTML with asset references for testing URL rewriting
+const blogScript = /* javascript */ `
 export default {
 	async fetch(request) {
 		const url = new URL(request.url);
 		const html = \`<!DOCTYPE html>
 <html>
 <head>
-	<title>Worker A</title>
+	<title>Blog</title>
 	<link rel="stylesheet" href="/assets/style.css">
 	<link rel="icon" href="/favicon.ico">
 </head>
 <body>
-	<h1>Worker A</h1>
+	<h1>Blog</h1>
 	<p>Path: \${url.pathname}</p>
 	<img src="/assets/logo.png" alt="Logo">
 	<script src="/static/app.js"></script>
@@ -26,8 +26,8 @@ export default {
 };
 `;
 
-// Stub Worker B - Returns HTML and handles redirects/cookies for testing
-const workerBScript = /* javascript */ `
+// Docs stub — Returns HTML and handles redirects/cookies for testing
+const docsScript = /* javascript */ `
 export default {
 	async fetch(request) {
 		const url = new URL(request.url);
@@ -50,11 +50,11 @@ export default {
 		const html = \`<!DOCTYPE html>
 <html>
 <head>
-	<title>Worker B</title>
+	<title>Docs</title>
 	<link rel="stylesheet" href="/build/style.css">
 </head>
 <body>
-	<h1>Worker B</h1>
+	<h1>Docs</h1>
 	<p>Path: \${url.pathname}</p>
 	<img src="/assets/image.png" alt="Image">
 </body>
@@ -77,23 +77,21 @@ export default defineWorkersProject({
 				miniflare: {
 					workers: [
 						{
-							name: "worker-a",
+							name: "blog",
 							modules: [
-								{ type: "ESModule", path: "index.js", contents: workerAScript },
+								{ type: "ESModule", path: "index.js", contents: blogScript },
 							],
 							compatibilityDate: "2024-01-01",
 						},
 						{
-							name: "worker-b",
+							name: "docs",
 							modules: [
-								{ type: "ESModule", path: "index.js", contents: workerBScript },
+								{ type: "ESModule", path: "index.js", contents: docsScript },
 							],
 							compatibilityDate: "2024-01-01",
 						},
-						// Stubs for service bindings defined in wrangler.jsonc.
-						// These prevent Miniflare from failing when it can't resolve the real Workers.
-						...["blog", "landing", "docs"].map((name) => ({
-							name,
+						{
+							name: "landing",
 							modules: [
 								{
 									type: "ESModule",
@@ -101,13 +99,13 @@ export default defineWorkersProject({
 									contents: /* javascript */ `
 export default {
 	async fetch(request) {
-		return new Response("${name} stub", { status: 200 });
+		return new Response("landing stub", { status: 200 });
 	},
 };`,
 								},
 							],
 							compatibilityDate: "2024-01-01",
-						})),
+						},
 					],
 				},
 			},
