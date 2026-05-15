@@ -9,7 +9,7 @@
 		"dev": "astro dev",
 		"build": "astro build",
 		"preview": "astro build && wrangler dev",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "astro sync && tsc --noEmit",
 		"astro": "astro",
 		"generate-types": "wrangler types",
 		"deploy": "astro build && wrangler deploy",
