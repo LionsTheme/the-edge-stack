@@ -90,6 +90,24 @@ export default defineWorkersProject({
 							],
 							compatibilityDate: "2024-01-01",
 						},
+						// Stubs for service bindings defined in wrangler.jsonc.
+						// These prevent Miniflare from failing when it can't resolve the real Workers.
+						...["blog", "landing", "docs"].map((name) => ({
+							name,
+							modules: [
+								{
+									type: "ESModule",
+									path: "index.js",
+									contents: /* javascript */ `
+export default {
+	async fetch(request) {
+		return new Response("${name} stub", { status: 200 });
+	},
+};`,
+								},
+							],
+							compatibilityDate: "2024-01-01",
+						})),
 					],
 				},
 			},
