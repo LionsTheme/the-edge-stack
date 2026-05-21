@@ -11,9 +11,13 @@ function Home() {
 	const { data: session } = useSession();
 
 	useEffect(() => {
-		api.message.$get({ query: {} }).then((res) => {
-			res.json().then((data) => setMessage(data.message));
-		});
+		api.message
+			.$get({ query: {} })
+			.then(async (res) => {
+				const data = await res.json();
+				setMessage(data.message);
+			})
+			.catch(() => setMessage("Failed to reach API"));
 	}, []);
 
 	return (
