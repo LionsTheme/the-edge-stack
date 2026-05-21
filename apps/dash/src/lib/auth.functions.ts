@@ -45,16 +45,23 @@ export const getSession = createServerFn({ method: "GET" }).handler(
 
 			const cookie = request.headers.get("cookie") ?? "";
 
-			console.log("getCookie: ", { cookie: cookie });
+			const sessionUrl = `${apiUrl}/api/auth/get-session`;
+			console.log("getCookie: ", { cookie, url: sessionUrl });
 
-			const res = await fetch(`${apiUrl}/api/auth/get-session`, {
-				headers: cookie ? { cookie } : {},
+			const res = await fetch(sessionUrl, {
+				headers: cookie
+					? {
+							cookie,
+							"X-Forwarded-By": "dash-server-fn",
+						}
+					: { "X-Forwarded-By": "dash-server-fn" },
 			});
 
 			console.log("getResponse: ", {
 				status: res.status,
 				ok: res.ok,
 				statusText: res.statusText,
+				headers: Object.fromEntries(res.headers.entries()),
 			});
 
 			if (!res.ok) {
