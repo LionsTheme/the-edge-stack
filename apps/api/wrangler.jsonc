@@ -15,7 +15,7 @@
 		"enabled": true
 	},
 	"upload_source_maps": true,
-	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
 	"alias": {
 		"@repo/database": "../../packages/database/src/index.ts"
 	}
