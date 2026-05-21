@@ -45,13 +45,19 @@ export const getSession = createServerFn({ method: "GET" }).handler(
 
 			const cookie = request.headers.get("cookie") ?? "";
 
+			console.log("getCookie: ", { cookie: cookie });
+
 			const res = await fetch(`${apiUrl}/api/auth/get-session`, {
 				headers: cookie ? { cookie } : {},
 			});
 
+			console.log("getResponse: ", { res: res });
+
 			if (!res.ok) return null;
 
 			const data = (await res.json()) as { user: SessionUser };
+
+			console.log("getData: ", { data: data });
 
 			if (!data.user || typeof data.user.id !== "string") {
 				return null;
