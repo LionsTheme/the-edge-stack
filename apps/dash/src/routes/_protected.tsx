@@ -5,8 +5,6 @@ export const Route = createFileRoute("/_protected")({
 	beforeLoad: async () => {
 		const session = await getSession();
 
-		console.log("beforeLoad: ", { session: session });
-
 		if (!session) {
 			throw redirect({ to: "/sign-in" });
 		}

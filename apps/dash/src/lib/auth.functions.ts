@@ -31,52 +31,26 @@ export const getSession = createServerFn({ method: "GET" }).handler(
 		try {
 			const request = getRequest();
 
-			// Derive API base URL: explicit config wins, otherwise same origin
 			const configured = import.meta.env.VITE_API_URL?.trim();
-			// const requestUrl = new URL(request.url);
-			// const apiUrl = configured || `${requestUrl.protocol}//${requestUrl.host}`;
-			const apiUrl = configured;
+			const requestUrl = new URL(request.url);
+			const apiUrl =
+				configured || `${requestUrl.protocol}//${requestUrl.host}`;
 
-			console.log("getSession: ", { configured: configured, apiUrl: apiUrl });
-
-			if (!apiUrl) {
-				throw new Error("API URL not configured");
-			}
+			if (!apiUrl) return null;
 
 			const cookie = request.headers.get("cookie") ?? "";
 
-			const sessionUrl = `${apiUrl}/api/auth/get-session`;
-			console.log("getCookie: ", { cookie, url: sessionUrl });
-
-			const res = await fetch(sessionUrl, {
+			const res = await fetch(`${apiUrl}/api/auth/get-session`, {
 				headers: cookie
-					? {
-							cookie,
-							"X-Forwarded-By": "dash-server-fn",
-						}
+					? { cookie, "X-Forwarded-By": "dash-server-fn" }
 					: { "X-Forwarded-By": "dash-server-fn" },
 			});
 
-			console.log("getResponse: ", {
-				status: res.status,
-				ok: res.ok,
-				statusText: res.statusText,
-				headers: Object.fromEntries(res.headers.entries()),
-			});
-
-			if (!res.ok) {
-				const errorBody = await res.text().catch(() => "unable to read body");
-				console.log("getSession error body: ", errorBody);
-				return null;
-			}
+			if (!res.ok) return null;
 
 			const data = (await res.json()) as { user: SessionUser };
 
-			console.log("getData: ", { data: data });
-
-			if (!data.user || typeof data.user.id !== "string") {
-				return null;
-			}
+			if (!data.user || typeof data.user.id !== "string") return null;
 
 			return { user: data.user } satisfies SessionResult;
 		} catch {
