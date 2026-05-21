@@ -51,9 +51,17 @@ export const getSession = createServerFn({ method: "GET" }).handler(
 				headers: cookie ? { cookie } : {},
 			});
 
-			console.log("getResponse: ", { res: res });
+			console.log("getResponse: ", {
+				status: res.status,
+				ok: res.ok,
+				statusText: res.statusText,
+			});
 
-			if (!res.ok) return null;
+			if (!res.ok) {
+				const errorBody = await res.text().catch(() => "unable to read body");
+				console.log("getSession error body: ", errorBody);
+				return null;
+			}
 
 			const data = (await res.json()) as { user: SessionUser };
 
