@@ -26,31 +26,40 @@ interface SessionResult {
  *
  * @returns The session user if authenticated, `null` otherwise.
  */
-export const getSession = createServerFn({ method: "GET" }).handler(async () => {
-	try {
-		const request = getRequest();
+export const getSession = createServerFn({ method: "GET" }).handler(
+	async () => {
+		try {
+			const request = getRequest();
 
-		// Derive API base URL: explicit config wins, otherwise same origin
-		const configured = import.meta.env.VITE_API_URL?.trim();
-		const requestUrl = new URL(request.url);
-		const apiUrl = configured || `${requestUrl.protocol}//${requestUrl.host}`;
+			// Derive API base URL: explicit config wins, otherwise same origin
+			const configured = import.meta.env.VITE_API_URL?.trim();
+			// const requestUrl = new URL(request.url);
+			// const apiUrl = configured || `${requestUrl.protocol}//${requestUrl.host}`;
+			const apiUrl = configured;
 
-		const cookie = request.headers.get("cookie") ?? "";
+			console.log("getSession: ", { configured: configured, apiUrl: apiUrl });
 
-		const res = await fetch(`${apiUrl}/api/auth/get-session`, {
-			headers: cookie ? { cookie } : {},
-		});
+			if (!apiUrl) {
+				throw new Error("API URL not configured");
+			}
 
-		if (!res.ok) return null;
+			const cookie = request.headers.get("cookie") ?? "";
 
-		const data = (await res.json()) as { user: SessionUser };
+			const res = await fetch(`${apiUrl}/api/auth/get-session`, {
+				headers: cookie ? { cookie } : {},
+			});
 
-		if (!data.user || typeof data.user.id !== "string") {
+			if (!res.ok) return null;
+
+			const data = (await res.json()) as { user: SessionUser };
+
+			if (!data.user || typeof data.user.id !== "string") {
+				return null;
+			}
+
+			return { user: data.user } satisfies SessionResult;
+		} catch {
 			return null;
 		}
-
-		return { user: data.user } satisfies SessionResult;
-	} catch {
-		return null;
-	}
-});
+	},
+);
