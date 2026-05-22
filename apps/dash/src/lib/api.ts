@@ -1,5 +1,5 @@
-import { hc } from "hono/client";
 import type { AppType } from "@repo/api-types";
+import { hc } from "hono/client";
 
 /**
  * API base URL for the Hono RPC client.

@@ -33,8 +33,7 @@ export const getSession = createServerFn({ method: "GET" }).handler(
 
 			const configured = import.meta.env.VITE_API_URL?.trim();
 			const requestUrl = new URL(request.url);
-			const apiUrl =
-				configured || `${requestUrl.protocol}//${requestUrl.host}`;
+			const apiUrl = configured || `${requestUrl.protocol}//${requestUrl.host}`;
 
 			if (!apiUrl) return null;
 
