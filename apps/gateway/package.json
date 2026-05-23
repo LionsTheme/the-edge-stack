@@ -15,7 +15,8 @@
 		"dev": "wrangler dev",
 		"deploy": "wrangler deploy",
 		"types": "tsc --noEmit",
-		"test": "vitest run"
+		"test": "vitest run",
+		"clean": "rm -rf .wrangler node_modules"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.71",

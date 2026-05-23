@@ -12,7 +12,7 @@
     "db:seed": "tsx src/seed.ts",
     "db:studio": "drizzle-kit studio",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

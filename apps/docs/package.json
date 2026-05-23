@@ -14,7 +14,8 @@
 		"cf-typegen": "wrangler types",
 		"lint": "biome lint .",
 		"format": "biome format .",
-		"check": "biome check ."
+		"check": "biome check .",
+		"clean": "rm -rf dist node_modules"
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^13.5.0",

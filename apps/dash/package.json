@@ -13,7 +13,8 @@
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check",
-    "deploy": "pnpm run build && wrangler deploy"
+    "deploy": "pnpm run build && wrangler deploy",
+    "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.36.3",

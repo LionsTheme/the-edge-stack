@@ -12,7 +12,8 @@
 		"lint": "biome lint .",
 		"format": "biome format .",
 		"check": "biome check .",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"clean": "rm -rf .wrangler node_modules"
 	},
 	"dependencies": {
 		"@hono/zod-validator": "^0.7.6",
